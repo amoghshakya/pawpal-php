@@ -1,0 +1,50 @@
+# PawPal -- Animal Adoption Platform
+
+A simple PHP + MySQL web application built using XAMPP.
+
+## Setup Instructions
+
+1. Clone the repository and place it in your XAMPP `htdocs` directory:
+    ```bash
+    git clone <this-url>
+    ```
+
+2. Install Dependencies:
+    - Ensure you have [Composer](https://getcomposer.org/) installed.
+    ```bash
+    composer install
+    ```
+
+3. Set up `.env` file:
+    - Copy `.env.example` to `.env` and update the database connection settings.
+    ```bash
+    cp .env.example .env
+    ```
+
+    ```env
+    DB_HOST=localhost
+    DB_NAME=pawpal
+    DB_USER=root
+    DB_PASS=
+    ```
+
+4. Create the database:
+    - Open [phpMyAdmin](http://localhost/phpmyadmin)
+    - Create a database named `pawpal`
+    - Import `schema.sql` 
+
+5. Run the project:
+    - Open your browser and navigate to `http://localhost/pawpal`.
+
+### Editor Setup 
+
+#### VSCode 
+
+Install the following extensions:
+- [PHP Intelephense](https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client)
+
+> Please use the LSP's (Intelephense) built-in formatter for PHP files.
+
+# License
+
+MIT License. Do whatever, but don't be evil :paw_prints:

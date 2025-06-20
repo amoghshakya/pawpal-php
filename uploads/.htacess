@@ -1,0 +1,9 @@
+# Basically, don't let anyone access this directory directly
+# Prevent PHP execution
+<FilesMatch "\.(php|php5|phtml)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Disable directory listing
+Options -Indexes
