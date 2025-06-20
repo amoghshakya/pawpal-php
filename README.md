@@ -1,6 +1,36 @@
-# PawPal -- Animal Adoption Platform
+# PawPal --- Animal Adoption Platform
 
 A simple PHP + MySQL web application built using XAMPP.
+
+## Folder Structure
+
+```bash
+.
+├── assets/
+│   ├── css/
+│   ├── images/
+│   └── js/
+├── config/
+│   └── database.php
+├── src/
+│   ├── Controllers/
+│   ├── Models/
+│   │   └── Pet.php
+│   └── Views/
+├── uploads/         # User uploads directory
+│   ├── dog.jpeg
+│   └── .htacess
+├── composer.json
+├── composer.lock
+├── .env
+├── .env.example
+├── .gitignore
+├── .htaccess
+├── index.php
+├── LICENSE
+├── README.md
+└── schema.sql
+```
 
 ## Setup Instructions
 
