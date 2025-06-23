@@ -27,11 +27,12 @@ class AuthController
                 $_POST['role'] ?? 'adopter'
             );
             if ($success) {
+                // NOTE: Or you could log the user in and redirect to home page 
                 header('Location: ' . BASE_URL . '/login');
                 exit;
             } else {
                 $error = "Registration failed.";
-                // Show the form below with error message
+                // TODO: Show the form below with error message
             }
         }
 
@@ -48,6 +49,7 @@ class AuthController
             $user = $this->userModel->findByEmail($_POST['email']);
             if ($user && password_verify($_POST['password'], $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
+                $_SESSION['name'] = $user['name'];
                 $_SESSION['role'] = $user['role'];
                 header('Location: ' . BASE_URL . '/');
                 exit;

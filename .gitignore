@@ -474,3 +474,7 @@ composer.lock
 
 # ENV
 .env
+
+# Media
+/uploads/*/
+!/uploads/.gitkeep

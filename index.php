@@ -1,4 +1,10 @@
 <?php
+// Error logging and display settings
+// Remove these in production!
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
@@ -11,9 +17,8 @@ session_start();
 
 
 use App\Controllers\AuthController;
+use App\Controllers\PetController;
 
-
-$pageTitle = "Hello, world!";
 // Page routing
 $page = $_GET['page'] ?? 'home';
 
@@ -25,57 +30,28 @@ switch ($page) {
         (new AuthController($pdo))->register();
         break;
     case 'logout':
+        // NOTE: We may not need a route for this...
+        // instead, we can just call the logout method directly
         (new AuthController($pdo))->logout();
         break;
-    case 'dashboard':
-        require __DIR__ . '/src/Views/dashboard.php';
+    case 'pets':
+        (new PetController($pdo))->index();
+        break;
+    case 'pets/create':
+        if (isset($_SESSION["user_id"])) {
+            (new PetController($pdo))->create();
+            break;
+        }
+        // If user is not logged in, redirect to login page
+        header('Location: ' . BASE_URL . '/login');
+        exit;
+    case 'home':
+        // Home page logic can be added here if needed
+        $pageTitle = "Welcome to the Home Page";
+        include __DIR__ . '/src/Views/home.php';
         break;
     default:
-?>
-        <!DOCTYPE html>
-        <html lang="en">
-
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title><?php echo $pageTitle; ?></title>
-            <link rel="stylesheet" href="assets/css/style.css" />
-        </head>
-
-        <body>
-            <header>
-                <nav>
-                    <ul>
-                        <li>
-                            <a href=<?php echo BASE_URL . '/' ?>>
-                                Home
-                            </a>
-                        </li>
-                        <?php if (isset($_SESSION['user_id'])): ?>
-                            <li>
-                                <a href=<?php echo BASE_URL . '/logout' ?>>
-                                    Logout
-                                </a>
-                            </li>
-                        <?php else: ?>
-                            <li>
-                                <a href=<?php echo BASE_URL . '/login' ?>>Login</a>
-
-                            </li>
-                            <li>
-                                <a href=<?php echo BASE_URL . '/register' ?>>Register</a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </nav>
-                <h1><?php echo $pageTitle; ?></h1>
-            </header>
-            <main>
-                <img src="<?php echo $_ENV['UPLOAD_DIR'] . 'dog.jpeg'; ?>" width='150px' />
-            </main>
-        </body>
-
-        </html>
-<?php
-        break;
+        http_response_code(404);
+        include __DIR__ . '/src/Views/404.php';
+        exit;
 }

@@ -29,7 +29,7 @@ CREATE TABLE pets (
   age INT,
   gender ENUM ('male', 'female', 'unknown') NOT NULL DEFAULT 'unknown',
   description TEXT,
-  status ENUM ('available', 'adopted', 'fostered') NOT NULL DEFAULT 'available',
+  status ENUM ('available', 'adopted') NOT NULL DEFAULT 'available',
   location VARCHAR(100) NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE

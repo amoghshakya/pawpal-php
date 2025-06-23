@@ -4,18 +4,32 @@ namespace App\Models;
 
 use PDO;
 
+enum GenderValues: string
+{
+  case male = 'male';
+  case female = 'female';
+  case unknown = 'unknown';
+}
+
+enum PetStatus: string
+{
+  case available = 'available';
+  case adopted = 'adopted';
+}
+
 class Pet
 {
+
   private PDO $db;
 
   private ?int $id = null;
-  private string $name;
-  private string $species;
+  public string $name;
+  public string $species;
   private ?string $breed = null;
   private ?int $age = null;
-  private string $gender;
+  private GenderValues $gender;
   private ?string $description = null;
-  private string $status = 'available';
+  private PetStatus $status = PetStatus::available;
   private string $location;
 
   public function __construct(PDO $db, array $data = [])
@@ -23,7 +37,13 @@ class Pet
     $this->db = $db;
     foreach ($data as $key => $value) {
       if (property_exists($this, $key)) {
-        $this->$key = $value;
+        if ($key === 'gender') {
+          $this->gender = GenderValues::from($value); // or tryFrom()
+        } elseif ($key === 'status') {
+          $this->status = PetStatus::from($value); // or tryFrom()
+        } else {
+          $this->$key = $value;
+        }
       }
     }
   }
@@ -45,26 +65,27 @@ class Pet
         $this->species,
         $this->breed,
         $this->age,
-        $this->gender,
+        ($gender ?? $this->gender)->name, // Because enums
         $this->description,
-        $this->status,
+        ($status ?? $this->status)->name,
         $this->location,
         $this->id
       ]);
     } else {
       // Create new pet 
       $stmt = $this->db->prepare(
-        "INSERT INTO pets (name, species, breed, age, gender, description, status, location) "
-          . "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO pets (user_id, name, species, breed, age, gender, description, status, location) "
+          . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
       );
       $result = $stmt->execute([
+        $_SESSION['user_id'],
         $this->name,
         $this->species,
         $this->breed,
         $this->age,
-        $this->gender,
+        $this->gender->name,
         $this->description,
-        $this->status,
+        $this->status->name,
         $this->location
       ]);
       if ($result) {
@@ -75,15 +96,25 @@ class Pet
     }
   }
 
-  public static function find(PDO $db, int $id): ?self
+  public static function findById(PDO $db, int $id): ?self
   {
     $stmt = $db->prepare("SELECT * FROM pets WHERE id = ?");
     $stmt->execute([$id]);
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($data) {
-      return new self($data);
+      return new self($db, $data);
     }
     return null;
+  }
+
+  public static function getAll(PDO $db)
+  {
+    $stmt = $db->prepare("SELECT * FROM pets;");
+    $stmt->execute();
+    $pets = [];
+    while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $pets[] = new self($db, $data);
+    }
   }
 
   // TODO: Add other getters and setters as needed

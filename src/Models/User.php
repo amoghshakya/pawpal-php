@@ -6,11 +6,23 @@ use PDO;
 
 class User
 {
-    private $db;
+    private PDO $db;
+    private int $id;
+    public string $name;
+    private string $email;
+    private string $password;
+    private string $role;
+    private string $created_at;
 
-    public function __construct(PDO $db)
+
+    public function __construct(PDO $db, array $data = [])
     {
         $this->db = $db;
+        foreach ($data as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
     }
 
     public function findByEmail(string $email)
@@ -29,10 +41,16 @@ class User
         return $stmt->execute([$name, $email, $hash, $role]);
     }
 
-    public function findById(int $id)
+    public static function findById(PDO $db, int $id): ?self
     {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($data) {
+            return new self($db, $data);
+        }
+
+        return null;
     }
 }
