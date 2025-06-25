@@ -115,7 +115,97 @@ class Pet
     while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
       $pets[] = new self($db, $data);
     }
+    return $pets;
   }
 
-  // TODO: Add other getters and setters as needed
+  public function getName(): string
+  {
+    return $this->name;
+  }
+
+  public function getSpecies(): string
+  {
+    return $this->species;
+  }
+
+  public function getBreed(): ?string
+  {
+    return $this->breed;
+  }
+
+  public function getAge(): ?int
+  {
+    return $this->age;
+  }
+
+  public function getGender(): GenderValues
+  {
+    return $this->gender;
+  }
+
+  public function getDescription(): ?string
+  {
+    return $this->description;
+  }
+
+  public function getStatus(): PetStatus
+  {
+    return $this->status;
+  }
+
+  public function getLocation(): string
+  {
+    return $this->location;
+  }
+
+  public function setName(string $name): void
+  {
+    $this->name = $name;
+  }
+
+  public function setSpecies(string $species): void
+  {
+    $this->species = $species;
+  }
+
+  public function setBreed(?string $breed): void
+  {
+    $this->breed = $breed;
+  }
+
+  public function setAge(?int $age): void
+  {
+    $this->age = $age;
+  }
+
+  public function setGender(GenderValues $gender): void
+  {
+    $this->gender = $gender;
+  }
+
+  public function setDescription(?string $description): void
+  {
+    $this->description = $description;
+  }
+
+  public function setStatus(PetStatus $status): void
+  {
+    $this->status = $status;
+  }
+
+  public function setLocation(string $location): void
+  {
+    $this->location = $location;
+  }
+
+  public function getImages(): array
+  {
+    $stmt = $this->db->prepare("SELECT * FROM pet_images WHERE pet_id = ?");
+    $stmt->execute([$this->id]);
+    $images = [];
+    while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $images[] = $data['image_path'];
+    }
+    return $images;
+  }
 }
