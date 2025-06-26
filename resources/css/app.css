@@ -1,7 +1,7 @@
 /* fonts */
-@import url('/public/fonts/inter.css');
-@import url('/public/fonts/poppins.css');
-@import 'tailwindcss';
+@import url("/public/fonts/inter.css");
+@import url("/public/fonts/poppins.css");
+@import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -10,10 +10,19 @@
 @source '../views/';
 
 @theme {
-    --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-heading: 'Poppins-Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-body:
+        "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-heading:
+        "Poppins-Variable", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+    --text-muted: #6b7280;
+    --color-primary: #765ea3;
+    --color-secondary: #cfabc0;
+    --color-bg: #f9f8fb;
+    --color-text: #050407;
+    --color-accent: #ba878f;
 }
 
 @layer {
@@ -53,4 +62,30 @@ h5 {
 
 h6 {
     @apply text-sm md:text-base lg:text-lg;
+}
+
+input,
+button,
+textarea,
+select {
+    @apply font-body text-text placeholder:text-muted transition-all
+    outline-none focus-visible:ring-2 focus-visible:ring-offset-1
+    focus-visible:ring-accent focus-visible:ring-offset-bg;
+}
+
+input {
+    @apply font-body px-3 py-2 text-sm bg-bg/75
+    rounded-md
+    border border-text/20 focus-visible:border-transparent;
+}
+
+button {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2
+    gap-2 whitespace-nowrap font-medium rounded-md
+    text-sm;
+}
+
+button.primary {
+    @apply bg-primary text-bg hover:bg-primary/90
+    focus-visible:ring-primary/50;
 }
