@@ -1,13 +1,13 @@
-@extends('components.base-layout')
+@extends("components.base-layout")
 
-@section('title', 'Register')
+@section("title", "Register")
 
-@section('header')
+@section("header")
     <h1>Register</h1>
     <p>Welcome to PawPal! Please fill out the form below to create your account.</p>
 @endsection
 
-@section('content')
+@section("content")
     @if ($errors->any())
         <div style="color:red;">
             <ul>
@@ -18,33 +18,33 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route("register") }}" enctype="multipart/form-data">
         @csrf
 
-        <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" required><br><br>
+        <input name="name" type="text" value="{{ old("name") }}" placeholder="Name" required><br><br>
 
-        <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required><br><br>
+        <input name="email" type="email" value="{{ old("email") }}" placeholder="Email" required><br><br>
 
-        <input type="text" name="phone" placeholder="Phone" value="{{ old('phone') }}" required><br><br>
+        <input name="phone" type="text" value="{{ old("phone") }}" placeholder="Phone" required><br><br>
 
-        <input type="password" name="password" placeholder="Password" required><br><br>
+        <input name="password" type="password" placeholder="Password" required><br><br>
 
-        <input type="password" name="password_confirmation" placeholder="Confirm Password" required><br><br>
+        <input name="password_confirmation" type="password" placeholder="Confirm Password" required><br><br>
 
         <select name="role" required>
-            <option value="adopter" {{ old('role') == 'adopter' ? 'selected' : '' }}>Adopter</option>
-            <option value="lister" {{ old('role') == 'lister' ? 'selected' : '' }}>Lister</option>
+            <option value="adopter" {{ old("role") == "adopter" ? "selected" : "" }}>Adopter</option>
+            <option value="lister" {{ old("role") == "lister" ? "selected" : "" }}>Lister</option>
         </select><br><br>
 
-        <input type="text" name="address" placeholder="Address" value="{{ old('address') }}" required><br><br>
+        <input name="address" type="text" value="{{ old("address") }}" placeholder="Address" required><br><br>
 
-        <input type="text" name="city" placeholder="City" value="{{ old('city') }}" required><br><br>
+        <input name="city" type="text" value="{{ old("city") }}" placeholder="City" required><br><br>
 
-        <input type="text" name="state" placeholder="State" value="{{ old('state') }}" required><br><br>
+        <input name="state" type="text" value="{{ old("state") }}" placeholder="State" required><br><br>
 
         <!-- <label>Profile Image:</label> -->
-        <!-- <input type="file" name="profile_image"><br><br> -->
+        <!-- <input name="profile_image" type="file"><br><br> -->
 
-        <button type="submit" class="primary">Register</button>
+        <x-button variant="primary" type="submit">Register</x-button>
     </form>
 @endsection

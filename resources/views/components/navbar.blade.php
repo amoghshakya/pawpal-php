@@ -1,28 +1,31 @@
-<nav class="flex justify-between items-center px-4 text-sm">
+<nav class="flex w-full items-center justify-between px-4 text-sm text-white only:sm:py-2">
     <div>
-        <div>
-            LOGO!!
-        </div>
-        <ul class="flex justify-around gap-2">
-            @foreach ($navlinks as $link)
-                <li class="text-gray-700 p-4">
-                    <a href="{{ route($link['route']) }}" class="hover:text-blue-500 hover:underline underline-offset-2">
-                        {{ $link['label'] }}
-                    </a>
-                </li>
-            @endforeach
-        </ul>
+        <img src="" alt="PawPal Logo" />
     </div>
-    <div class="flex items-around gap-4">
+    <ul class="font-body text-text hidden justify-around gap-2 text-xs font-medium uppercase tracking-wider lg:flex">
+        @foreach ($navlinks as $link)
+            <li class="p-4">
+                <x-nav-link class="px-2 hover:font-[600]" href="{{ route($link['route']) }}">
+                    {{ $link['label'] }}
+                </x-nav-link>
+            </li>
+        @endforeach
+    </ul>
+    <div class="items-around text-text hidden gap-1 font-medium lg:flex">
         @if (auth()->check())
-            <span class="text-gray-700">Welcome, {{ auth()->user()->name }}</span>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="text-gray-700 hover:text-blue-500">Logout</button>
-            </form>
+            {{-- TODO: Avatar Component --}}
+            <div></div>
         @else
-            <a href="{{ route('login') }}" class="hover:text-blue-500">Login</a>
-            <a href="{{ route('register') }}" class="hover:text-blue-500">Register</a>
+            <x-nav-link href="{{ route('login') }}" variant="secondary">
+                Login
+            </x-nav-link>
+            <x-nav-link href="{{ route('register') }}" variant="primary">
+                Register
+            </x-nav-link>
         @endif
     </div>
+    {{-- TODO: Onclick JS and Animations --}}
+    <button class="px-1 py-2 lg:hidden">
+        @svg('heroicon-o-bars-3', 'w-6 h-6')
+    </button>
 </nav>

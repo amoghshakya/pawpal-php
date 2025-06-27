@@ -15,8 +15,9 @@ class Navbar extends Component
     public function __construct()
     {
         $this->navlinks = [
-            'home' => ['route' => 'home', 'label' => 'Home'],
             'pets' => ['route' => 'pets.index', 'label' => 'Pets'],
+            'about' => ['route' => 'home', 'label' => 'About'],
+            'contact' => ['route' => 'home', 'label' => 'Contact'],
         ];
     }
 

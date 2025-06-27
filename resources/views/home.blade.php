@@ -1,4 +1,19 @@
-<x-BaseLayout>
+@extends('components.base-layout')
+
+@section('title', 'PawPal - Home')
+
+@section('header')
     <x-Navbar />
-    <h1>PawPal</h1>
-</x-BaseLayout>
+@endsection
+
+@section('content')
+    <section class="h-screen items-center pt-24 *:m-auto" id="home-banner">
+        <div class="container flex flex-col items-center justify-center gap-4 p-8 text-center">
+            <h1 class="md:text-6xl! z-10 text-center">Meet your new best friend today.</h1>
+            <img class="-mt-20 w-1/2 drop-shadow-2xl md:w-1/3" src="{{ asset('images/dog-png-22648.png') }}" alt="Dog Image"
+                draggable="false" />
+        </div>
+    </section>
+    <section class="h-screen">
+    </section>
+@endsection

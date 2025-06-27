@@ -1,6 +1,6 @@
 /* fonts */
-@import url("/public/fonts/inter.css");
-@import url("/public/fonts/poppins.css");
+@import url("../../public/fonts/inter.css");
+@import url("../../public/fonts/poppins.css");
 @import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -27,7 +27,7 @@
 
 @layer {
     :root {
-        @apply font-body;
+        @apply font-body bg-bg text-text;
     }
 }
 
@@ -37,7 +37,7 @@ h3,
 h4,
 h5,
 h6 {
-    @apply font-heading font-bold;
+    @apply font-heading font-bold tracking-tighter;
 }
 
 h1 {
@@ -68,24 +68,13 @@ input,
 button,
 textarea,
 select {
-    @apply font-body text-text placeholder:text-muted transition-all
-    outline-none focus-visible:ring-2 focus-visible:ring-offset-1
-    focus-visible:ring-accent focus-visible:ring-offset-bg;
+    @apply font-body text-text placeholder:text-muted transition-all outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-accent focus-visible:ring-offset-bg;
 }
 
 input {
-    @apply font-body px-3 py-2 text-sm bg-bg/75
-    rounded-md
-    border border-text/20 focus-visible:border-transparent;
+    @apply font-body px-3 py-2 text-sm bg-bg/75 rounded-md border border-text/20 focus-visible:border-transparent;
 }
 
-button {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2
-    gap-2 whitespace-nowrap font-medium rounded-md
-    text-sm;
-}
-
-button.primary {
-    @apply bg-primary text-bg hover:bg-primary/90
-    focus-visible:ring-primary/50;
+a {
+    @apply hover:underline underline-offset-2 transition-colors focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-accent focus-visible:ring-offset-bg outline-none;
 }

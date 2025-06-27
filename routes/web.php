@@ -1,19 +1,17 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PetController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-Route::get('/pets', function () {
-    return view('pets.index');
-})->name('pets.index');
+Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
 
-Route::get('/pets/create', function () {
-    return view('pets.create');
-})->name('pets.create');
+Route::get('/pets/create', [PetController::class, 'create'])->middleware('auth')->name('pets.create');
+Route::post('/pets/create', [PetController::class, 'store'])->middleware('auth')->name('pets.store');
 
 Route::get('/login', function () {
     return view('auth.login');
