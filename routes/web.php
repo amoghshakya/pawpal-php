@@ -9,6 +9,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
+Route::get('/pets/{id}', [PetController::class, 'show'])->name('pets.show')->where('id', '[0-9]+');
 
 Route::get('/pets/create', [PetController::class, 'create'])->middleware('auth')->name('pets.create');
 Route::post('/pets/create', [PetController::class, 'store'])->middleware('auth')->name('pets.store');

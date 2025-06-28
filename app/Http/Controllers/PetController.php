@@ -4,27 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\Pet;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 
 class PetController extends Controller
 {
     public function index(): View
     {
-        $pets = Pet::paginate(15); // 15 pets per page
+        $pets = Pet::with(['lister'])->simplePaginate(10); // 10 pets per page
         return view('pets.index', compact('pets'));
+    }
+
+    public function show(int $id): View
+    {
+        $pet = Pet::with(['lister'])->findOrFail($id);
+        return dd('Pet details', $pet);
     }
 
     public function create(): View
     {
-        if (Auth::user()->role !== 'lister') {
+        if (!Auth::user()->isLister()) {
             abort(403, 'Unauthorized action.');
         }
         return view('pets.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         if (!Auth::user()->isLister()) {
             abort(403, 'Unauthorized action.');
@@ -39,7 +47,7 @@ class PetController extends Controller
             'gender' => ['nullable', 'in:male,female,unknown'],
         ]);
 
-        $data['user_id'] = Auth::id(); // Assuming the user is authenticated
+        $data['user_id'] = Auth::user()->id; // Assuming the user is authenticated
 
         Pet::create($data);
 
