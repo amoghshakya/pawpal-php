@@ -20,8 +20,8 @@ class PetController extends Controller
 
     public function show(int $id): View
     {
-        $pet = Pet::with(['lister'])->findOrFail($id);
-        return dd('Pet details', $pet);
+        $pet = Pet::with(['lister', 'images'])->findOrFail($id);
+        return view('pets.show', ['pet' => $pet]);
     }
 
     public function create(): View

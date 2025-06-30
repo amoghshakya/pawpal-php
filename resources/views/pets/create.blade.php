@@ -139,7 +139,7 @@
                                     value="{{ old('description') }}"
                                     rows="3"
                                     placeholder="A friendly dog who loves to play fetch."
-                                    maxlength="500"
+                                    maxlength="2000"
                                     minlength="10"
                                     required
                                 ></textarea>
@@ -213,7 +213,7 @@
             <h4 class="font-body mb-2 text-lg font-medium">Edit Caption</h4>
             {{-- Preview --}}
             <img
-                class="mx-auto mb-3 h-1/2 w-full rounded-md object-cover shadow md:w-3/4"
+                class="mx-auto mb-3 aspect-auto h-[70dvh] w-full rounded-md object-cover shadow"
                 id="caption-modal-image"
                 src="#"
                 alt="Image preview"

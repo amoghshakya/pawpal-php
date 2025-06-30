@@ -17,7 +17,7 @@
         "Poppins-Variable", ui-sans-serif, system-ui, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
-    --text-muted: #6b7280;
+    --color-muted: #6b7280;
     --color-primary: #434ad0;
     --color-secondary: #cf93e4;
     --color-bg: #f7f7fd;
@@ -25,7 +25,7 @@
     --color-accent: #d56ddb;
 }
 
-@layer {
+@layer base {
     :root {
         @apply font-body bg-bg text-text;
     }
