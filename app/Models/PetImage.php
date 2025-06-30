@@ -9,6 +9,7 @@ class PetImage extends Model
     protected $fillable = [
         'pet_id',
         'image_path',
+        'caption',
     ];
 
     public function pet()

@@ -68,7 +68,7 @@ input,
 button,
 textarea,
 select {
-    @apply font-body text-text placeholder:text-muted transition-all outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-accent focus-visible:ring-offset-bg;
+    @apply font-body text-text placeholder:text-muted transition-all outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-accent focus-visible:ring-offset-bg focus-visible:border-transparent;
 }
 
 textarea {

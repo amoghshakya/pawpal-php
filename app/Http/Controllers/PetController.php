@@ -14,7 +14,7 @@ class PetController extends Controller
 {
     public function index(): View
     {
-        $pets = Pet::with(['lister'])->simplePaginate(10); // 10 pets per page
+        $pets = Pet::with(['lister', 'images'])->simplePaginate(10); // 10 pets per page
         return view('pets.index', compact('pets'));
     }
 
@@ -45,11 +45,43 @@ class PetController extends Controller
             'age' => ['required', 'integer', 'min:0'],
             'description' => ['nullable', 'string'],
             'gender' => ['nullable', 'in:male,female,unknown'],
+            'photos' => ['required', 'array'],
+            'photos.*' => ['file', 'image', 'max:10240'],
+            'captions_json' => ['nullable', 'json'],
         ]);
+
+        $captions = [];
+        if ($request->filled('captions_json')) {
+            $captions = json_decode($request->input('captions_json'), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return back()->withErrors(['captions_json' => 'Invalid JSON format for captions']);
+            }
+        }
 
         $data['user_id'] = Auth::user()->id; // Assuming the user is authenticated
 
-        Pet::create($data);
+        $pet = Pet::create([
+            'user_id' => $data['user_id'],
+            'name' => $data['name'],
+            'species' => $data['species'],
+            'breed' => $data['breed'] ?? null,
+            'age' => $data['age'],
+            'gender' => $data['gender'] ?? 'unknown',
+            'status' => 'available', // Default status
+            'description' => $data['description'] ?? null,
+        ]);
+
+        foreach ($request->file('photos') as $index => $photo) {
+            $filename = $photo->store('pets/' . $pet->id, 'public'); // /public/pets/{pet_id}
+            $key = $photo->getClientOriginalName() . '-' . $photo->getSize();
+
+            $caption = $captions[$key] ?? null;
+
+            $pet->images()->create([
+                'image_path' => $filename,
+                'caption' => $caption,
+            ]);
+        }
 
         return redirect()->route('pets.index')->with('success', 'Pet created successfully.');
     }
