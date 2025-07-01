@@ -12,7 +12,7 @@ class AuthController extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'exists:user,email'],
             'password' => ['required']
         ]);
 
@@ -38,7 +38,7 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'confirmed', 'min:8'],
             'role' => ['in:adopter,lister'],
-            'phone' => ['required', 'string', 'max:20'],
+            'phone' => ['required', 'string', 'max:20', 'unique:users,phone'],
             'address' => ['required', 'string', 'max:255'],
             'city' => ['required', 'string', 'max:100'],
             'state' => ['required', 'string', 'max:100'],

@@ -29,18 +29,13 @@
                         for="email"
                     >Name</label>
                     <div class="mt-2">
-                        <input
-                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                        <x-input
                             id="name"
                             name="name"
-                            type="text"
-                            value="{{ old('name') }}"autocomplete="name"
                             required
                         />
                     </div>
-                    @error('name')
-                        <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                    @enderror
+                    <x-error-field name="name" />
                 </div>
 
                 <div>
@@ -49,8 +44,7 @@
                         for="email"
                     >Email address</label>
                     <div class="mt-2">
-                        <input
-                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                        <x-input
                             id="email"
                             name="email"
                             type="email"
@@ -58,9 +52,7 @@
                             required
                         />
                     </div>
-                    @error('email')
-                        <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                    @enderror
+                    <x-error-field name="email" />
                 </div>
 
 
@@ -70,18 +62,14 @@
                         for="email"
                     >Phone Number</label>
                     <div class="mt-2">
-                        <input
-                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                        <x-input
                             name="phone"
                             type="tel"
-                            value="{{ old('phone') }}"
                             autocomplete="phone"
                             required
                         />
                     </div>
-                    @error('phone')
-                        <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                    @enderror
+                    <x-error-field name="phone" />
                 </div>
 
                 <div>
@@ -90,8 +78,7 @@
                         for="password"
                     >Password</label>
                     <div class="mt-2">
-                        <input
-                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                        <x-input
                             id="password"
                             name="password"
                             type="password"
@@ -111,11 +98,10 @@
                 <div>
                     <label
                         class="block text-sm/6 font-medium text-gray-900"
-                        for="password"
+                        for="confirm-password"
                     >Confirm Password</label>
                     <div class="mt-2">
-                        <input
-                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                        <x-input
                             id="confirm-password"
                             name="password_confirmation"
                             type="password"
@@ -123,9 +109,7 @@
                             required
                         />
                     </div>
-                    @error('password_confirmation')
-                        <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                    @enderror
+                    <x-error-field name="password_confirmation" />
                     <span
                         class="text-xs/snug font-semibold text-red-500"
                         id="confirm-password-error"
@@ -192,69 +176,53 @@
                     </div>
                 </div>
 
-                <div class="flex gap-2">
+                <div class="grid grid-cols-2 gap-2">
                     <div class="flex-shrink">
                         <label
                             class="block text-sm/6 font-medium text-gray-900"
-                            for="email"
+                            for="address"
                         >Address</label>
                         <div class="mt-2">
-                            <input
-                                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                            <x-input
                                 id="address"
                                 name="address"
-                                type="text"
-                                value="{{ old('address') }}"
                                 autocomplete="address"
                                 required
                             />
                         </div>
-                        @error('address')
-                            <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                        @enderror
+                        <x-error-field name="address" />
                     </div>
                     <div class="flex-shrink">
                         <label
                             class="block text-sm/6 font-medium text-gray-900"
-                            for="email"
+                            for="city"
                         >City</label>
                         <div class="mt-2">
-                            <input
-                                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                            <x-input
                                 id="city"
                                 name="city"
-                                type="text"
-                                value="{{ old('city') }}"
                                 autocomplete="city"
                                 required
                             />
                         </div>
-                        @error('city')
-                            <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                        @enderror
+                        <x-error-field name="city" />
                     </div>
-
                 </div>
 
-                <div class="flex-grow">
+                <div class="">
                     <label
                         class="block text-sm/6 font-medium text-gray-900"
-                        for="email"
+                        for="state"
                     >State</label>
                     <div class="mt-2">
-                        <input
-                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                        <x-input
                             id="state"
                             name="state"
-                            type="text"
-                            value="{{ old('state') }}"
                             autocomplete="state"
                             required
                         />
                     </div>
-                    @error('state')
-                        <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                    @enderror
+                    <x-error-field name="state" />
                 </div>
                 {{-- For role input --}}
                 <input

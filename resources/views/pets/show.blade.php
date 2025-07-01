@@ -14,10 +14,12 @@
             </div>
             <div class="p-4">
                 <div class="mb-2 flex items-center justify-between">
-                    <h1 class="mb-2 text-2xl font-bold">{{ $pet->name }}</h1>
-                    <span class="text-primary text-xl font-semibold">
-                        {{ $pet->species }}
-                    </span>
+                    <div>
+                        <h1 class="mb-2 text-2xl font-bold">{{ $pet->name }}</h1>
+                        <span class="text-primary text-xl font-semibold">
+                            {{ $pet->species }}
+                        </span>
+                    </div>
                 </div>
                 <div>
                     <p class="text-muted mb-4 text-sm">

@@ -17,9 +17,8 @@ class PetController extends Controller
         return view('pets.index', compact('pets'));
     }
 
-    public function show(int $id): View
+    public function show(Pet $pet): View
     {
-        $pet = Pet::with(['lister', 'images'])->findOrFail($id);
         return view('pets.show', ['pet' => $pet]);
     }
 
@@ -38,10 +37,10 @@ class PetController extends Controller
         }
         // Logic to store a new pet in the database
         $data = $request->validate([
-            'name' => ['required'],
-            'species' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'min:2', 'max:255'],
+            'species' => ['required', 'string', 'max:255', 'min:3'],
             'breed' => ['nullable', 'string', 'max:255'],
-            'age' => ['required', 'string'],
+            'age' => ['required', 'string', 'min:5'],
             'description' => ['nullable', 'string'],
             'gender' => ['nullable', 'in:male,female,unknown'],
             'vaccinated' => ['required', 'in:true,false,1,0'],

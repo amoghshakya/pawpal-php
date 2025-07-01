@@ -18,10 +18,11 @@
         @endforeach
     </ul>
     <div class="items-around text-text hidden gap-1 font-medium lg:flex">
-        @if (auth()->check())
-            {{-- TODO: Avatar Component --}}
+        @auth
+            {{-- TODO: Avatar --}}
             <x-avatar />
-        @else
+        @endauth
+        @guest
             <x-nav-link
                 href="{{ route('login') }}"
                 variant="secondary"
@@ -34,7 +35,7 @@
             >
                 Register
             </x-nav-link>
-        @endif
+        @endguest
     </div>
     {{-- TODO: Onclick JS and Animations --}}
     <button class="px-1 py-2 lg:hidden">

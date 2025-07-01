@@ -23,69 +23,54 @@
                             <label
                                 class="block text-sm/6 font-medium text-gray-900"
                                 for="name"
-                            >Name</label>
+                            >Name
+                                <span class="text-accent text-xs/snug">*</span>
+                            </label>
                             <div class="mt-2">
-                                <div class="flex items-center rounded-md bg-white">
-                                    <input
-                                        class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                        id="name"
-                                        name="name"
-                                        type="text"
-                                        value="{{ old('name') }}"
-                                        placeholder="Buddy"
-                                        required
-                                    />
-                                </div>
+                                <x-input
+                                    id="name"
+                                    name="name"
+                                    placeholder="Buddy"
+                                    required
+                                />
                             </div>
-                            @error('name')
-                                <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                            @enderror
+                            <x-error-field name="name" />
                         </div>
 
                         <div class="">
                             <label
                                 class="block text-sm/6 font-medium text-gray-900"
                                 for="species"
-                            >Species</label>
+                            >Species
+                                <span class="text-accent text-xs/snug">*</span>
+                            </label>
                             <div class="mt-2">
-                                <div class="flex items-center rounded-md bg-white">
-                                    <input
-                                        class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                        id="species"
-                                        name="species"
-                                        type="text"
-                                        value="{{ old('species') }}"
-                                        placeholder="Dog"
-                                        required
-                                    />
-                                </div>
+                                <x-input
+                                    id="species"
+                                    name="species"
+                                    placeholder="Dog, Cat, Bird, ..."
+                                    required
+                                />
                             </div>
-                            @error('species')
-                                <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                            @enderror
+                            <x-error-field name="species" />
                         </div>
 
                         <div class="">
                             <label
                                 class="block text-sm/6 font-medium text-gray-900"
                                 for="breed"
-                            >Breed</label>
+                            >Breed
+                                <span class="text-accent text-xs/snug">*</span>
+                            </label>
                             <div class="mt-2">
-                                <div class="flex items-center rounded-md bg-white">
-                                    <input
-                                        class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                        id="breed"
-                                        name="breed"
-                                        type="text"
-                                        value="{{ old('breed') }}"
-                                        placeholder="Golden Retriever"
-                                        required
-                                    />
-                                </div>
+                                <x-input
+                                    id="breed"
+                                    name="breed"
+                                    placeholder="Golden Retriever, Siamese, ..."
+                                    required
+                                />
                             </div>
-                            @error('breed')
-                                <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                            @enderror
+                            <x-error-field name="breed" />
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
@@ -93,30 +78,27 @@
                                 <label
                                     class="block text-sm/6 font-medium text-gray-900"
                                     for="age"
-                                >Age</label>
+                                >Age
+                                    <span class="text-accent text-xs/snug">*</span>
+                                </label>
                                 <div class="mt-2">
-                                    <div class="flex items-center rounded-md bg-white">
-                                        <input
-                                            class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                            id="age"
-                                            name="age"
-                                            type="text"
-                                            value="{{ old('age') }}"
-                                            placeholder="6 weeks, 1 year, ..."
-                                            required
-                                        />
-                                    </div>
+                                    <x-input
+                                        id="age"
+                                        name="age"
+                                        placeholder="6 weeks, 1 year, ..."
+                                        required
+                                    />
                                 </div>
-                                @error('age')
-                                    <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                                @enderror
+                                <x-error-field name="age" />
                             </div>
 
                             <div class="">
                                 <label
                                     class="block text-sm/6 font-medium text-gray-900"
                                     for="gender"
-                                >Gender</label>
+                                >Gender
+                                    <span class="text-accent text-xs/snug">*</span>
+                                </label>
                                 <x-select-dropdown
                                     name="gender"
                                     selected="Unknown"
@@ -129,23 +111,18 @@
                             <label
                                 class="block text-sm/6 font-medium text-gray-900"
                                 for="location"
-                            >Location</label>
+                            >Location
+                                <span class="text-accent text-xs/snug">*</span>
+                            </label>
                             <div class="mt-2">
-                                <div class="flex items-center rounded-md bg-white">
-                                    <input
-                                        class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                        id="location"
-                                        name="location"
-                                        type="text"
-                                        value="{{ old('location') }}"
-                                        placeholder="Where are you based?"
-                                        required
-                                    />
-                                </div>
+                                <x-input
+                                    id="location"
+                                    name="location"
+                                    placeholder="Where are you based?"
+                                    required
+                                />
                             </div>
-                            @error('location')
-                                <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                            @enderror
+                            <x-error-field name="location" />
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
@@ -155,27 +132,22 @@
                                     for="special_needs"
                                 >Special Needs</label>
                                 <div class="mt-2">
-                                    <div class="flex items-center gap-8 rounded-md bg-white">
-                                        <input
-                                            class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
-                                            id="special_needs"
-                                            name="special_needs"
-                                            type="text"
-                                            value="{{ old('special_needs') }}"
-                                            placeholder="Blind in one eye, requires medication..."
-                                        />
-                                    </div>
+                                    <x-input
+                                        id="special_needs"
+                                        name="special_needs"
+                                        placeholder="Blind in one eye, requires medication..."
+                                    />
                                 </div>
-                                @error('special_needs')
-                                    <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                                @enderror
+                                <x-error-field name="special_needs" />
                             </div>
 
                             <div class="">
                                 <label
                                     class="block text-sm/6 font-medium text-gray-900"
                                     for="vaccinated"
-                                >Vaccinated</label>
+                                >Vaccinated
+                                    <span class="text-accent text-xs/snug">*</span>
+                                </label>
                                 <div class="mt-2">
                                     <div class="flex items-center gap-8 rounded-md bg-white p-2">
                                         <div class="flex items-center">
@@ -207,9 +179,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                @error('special_needs')
-                                    <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                                @enderror
+                                <x-error-field name="vaccinated" />
                             </div>
                         </div>
 
@@ -220,7 +190,9 @@
                             <label
                                 class="block text-sm/6 font-medium text-gray-900"
                                 for="vaccination_details"
-                            >Vaccination Details</label>
+                            >Vaccination Details
+                                <span class="text-accent text-xs/snug">*</span>
+                            </label>
                             <div class="mt-2">
                                 <textarea
                                     class="block w-full rounded-md bg-white px-3 py-1.5 text-base sm:text-sm/6"
@@ -234,9 +206,7 @@
                                     required
                                 ></textarea>
                             </div>
-                            @error('description')
-                                <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                            @enderror
+                            <x-error-field name="vaccination_details" />
                         </div>
 
 
@@ -244,7 +214,9 @@
                             <label
                                 class="block text-sm/6 font-medium text-gray-900"
                                 for="description"
-                            >About</label>
+                            >About
+                                <span class="text-accent text-xs/snug">*</span>
+                            </label>
                             <div class="mt-2">
                                 <textarea
                                     class="block w-full rounded-md bg-white px-3 py-1.5 text-base sm:text-sm/6"
@@ -258,9 +230,7 @@
                                     required
                                 ></textarea>
                             </div>
-                            @error('description')
-                                <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                            @enderror
+                            <x-error-field name="description" />
                             <p class="mt-3 text-sm/6 text-gray-600">Write a few sentences about the pet.</p>
                         </div>
 
@@ -268,7 +238,9 @@
                             <label
                                 class="block text-sm/6 font-medium text-gray-900"
                                 for="photos"
-                            >Photos</label>
+                            >Photos
+                                <span class="text-accent text-xs/snug">*</span>
+                            </label>
                             <div
                                 class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
                                 id="drop-zone"
@@ -295,9 +267,7 @@
                                     <p class="text-xs/5 text-gray-600">PNG or JPG up to 10MB</p>
                                 </div>
                             </div>
-                            @error('photos')
-                                <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
-                            @enderror
+                            <x-error-field name="photos" />
 
                             <div
                                 class="flex gap-2"
@@ -316,7 +286,7 @@
                 <x-button
                     type="submit"
                     variant="primary"
-                >ok</x-button>
+                >Create Listing</x-button>
         </form>
     </section>
     <div
@@ -332,8 +302,8 @@
                 src="#"
                 alt="Image preview"
             />
-            <input
-                class="mb-4 w-full rounded-md border px-3 py-2 text-sm"
+            <x-input
+                class="mb-4"
                 id="caption-modal-input"
                 type="text"
                 placeholder="Enter caption..."
@@ -441,9 +411,12 @@
                 removeButton.innerHTML =
                     `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4"> <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" /></svg>`;
                 removeButton.type = 'button';
-                removeButton.classList.add('absolute', 'top-0', 'right-0', 'hidden', 'group-hover:block',
-                    'bg-red-500', 'rounded-full', 'p-0', 'group-hover:*:text-bg', 'cursor-pointer',
-                    'group-hover:*:shadow');
+                removeButton.classList.add(
+                    'absolute', 'top-0', 'right-0',
+                    'bg-red-500', 'rounded-full', 'p-1', '*:text-white',
+                    'cursor-pointer', 'shadow',
+                    'md:hidden', 'group-hover:md:block', 'block' // show on md and below
+                );
                 removeButton.addEventListener('click', () => {
                     files.splice(index, 1); // remove from array
                     const key = `${file.name}-${file.size}`;
@@ -456,7 +429,7 @@
                     `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>`;
                 editButton.type = 'button';
                 editButton.classList.add(
-                    'absolute', 'bottom-12', 'right-12', 'hidden', 'group-hover:block',
+                    'absolute', 'bottom-12', 'right-12', 'md:hidden', 'block', 'group-hover:md:block',
                     'bg-gray-300/50', 'rounded-full', 'text-xs', 'p-3', 'cursor-pointer',
                     'hover:bg-gray-300/75'
                 );
