@@ -18,9 +18,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('species');
             $table->string('breed')->nullable();
-            $table->integer('age')->nullable();
+            $table->string('age')->nullable();
             $table->enum('gender', ['male', 'female', 'unknown'])->default('unknown');
             $table->text('description')->nullable();
+            $table->boolean('vaccinated')->default(false);
+            $table->text('vaccination_details')->nullable();
+            $table->text('special_needs')->nullable();
+            $table->string('location');
             $table->enum('status', ['available', 'adopted'])->default('available');
             $table->timestamps();
         });

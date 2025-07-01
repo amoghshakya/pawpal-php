@@ -7,7 +7,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 
 class PetController extends Controller
@@ -42,13 +41,19 @@ class PetController extends Controller
             'name' => ['required'],
             'species' => ['required', 'string', 'max:255'],
             'breed' => ['nullable', 'string', 'max:255'],
-            'age' => ['required', 'integer', 'min:0'],
+            'age' => ['required', 'string'],
             'description' => ['nullable', 'string'],
             'gender' => ['nullable', 'in:male,female,unknown'],
+            'vaccinated' => ['required', 'in:true,false,1,0'],
+            'vaccination_details' => ['nullable', 'string'],
+            'special_needs' => ['nullable', 'string', 'max:255'],
+            'location' => ['required', 'string', 'max:255'],
             'photos' => ['required', 'array'],
             'photos.*' => ['file', 'image', 'max:10240'],
             'captions_json' => ['nullable', 'json'],
         ]);
+
+        // dd($data);
 
         $captions = [];
         if ($request->filled('captions_json')) {
@@ -68,7 +73,11 @@ class PetController extends Controller
             'age' => $data['age'],
             'gender' => $data['gender'] ?? 'unknown',
             'status' => 'available', // Default status
-            'description' => $data['description'] ?? null,
+            'description' => $data['description'],
+            'vaccinated' => $data['vaccinated'] === 'true' || $data['vaccinated'] === '1',
+            'vaccination_details' => $data['vaccination_details'] ?? null,
+            'special_needs' => $data['special_needs'] ?? null,
+            'location' => $data['location'],
         ]);
 
         foreach ($request->file('photos') as $index => $photo) {

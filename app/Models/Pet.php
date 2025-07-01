@@ -17,6 +17,10 @@ class Pet extends Model
         'gender',
         'status',
         'description',
+        'vaccinated',
+        'vaccination_details',
+        'special_needs',
+        'location',
     ];
 
     public function lister()

@@ -100,10 +100,9 @@
                                             class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
                                             id="age"
                                             name="age"
-                                            type="number"
+                                            type="text"
                                             value="{{ old('age') }}"
-                                            min="0"
-                                            placeholder="2"
+                                            placeholder="6 weeks, 1 year, ..."
                                             required
                                         />
                                     </div>
@@ -125,6 +124,121 @@
                                 />
                             </div>
                         </div>
+
+                        <div class="">
+                            <label
+                                class="block text-sm/6 font-medium text-gray-900"
+                                for="location"
+                            >Location</label>
+                            <div class="mt-2">
+                                <div class="flex items-center rounded-md bg-white">
+                                    <input
+                                        class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                        id="location"
+                                        name="location"
+                                        type="text"
+                                        value="{{ old('location') }}"
+                                        placeholder="Where are you based?"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            @error('location')
+                                <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="">
+                                <label
+                                    class="block text-sm/6 font-medium text-gray-900"
+                                    for="special_needs"
+                                >Special Needs</label>
+                                <div class="mt-2">
+                                    <div class="flex items-center gap-8 rounded-md bg-white">
+                                        <input
+                                            class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6"
+                                            id="special_needs"
+                                            name="special_needs"
+                                            type="text"
+                                            value="{{ old('special_needs') }}"
+                                            placeholder="Blind in one eye, requires medication..."
+                                        />
+                                    </div>
+                                </div>
+                                @error('special_needs')
+                                    <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="">
+                                <label
+                                    class="block text-sm/6 font-medium text-gray-900"
+                                    for="vaccinated"
+                                >Vaccinated</label>
+                                <div class="mt-2">
+                                    <div class="flex items-center gap-8 rounded-md bg-white p-2">
+                                        <div class="flex items-center">
+                                            <input
+                                                class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600"
+                                                id="yes-vaccinated"
+                                                name="vaccinated"
+                                                type="radio"
+                                                value="true"
+                                            >
+                                            <label
+                                                class="ms-2 text-sm font-medium text-gray-900"
+                                                for="yes-vaccinated"
+                                            >Yes</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input
+                                                class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600"
+                                                id="no-vaccinated"
+                                                name="vaccinated"
+                                                type="radio"
+                                                value="false"
+                                                checked
+                                            >
+                                            <label
+                                                class="ms-2 text-sm font-medium text-gray-900"
+                                                for="no-vaccinated"
+                                            >No</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                @error('special_needs')
+                                    <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div
+                            class="col-span-full hidden"
+                            id="vaccination-details-container"
+                        >
+                            <label
+                                class="block text-sm/6 font-medium text-gray-900"
+                                for="vaccination_details"
+                            >Vaccination Details</label>
+                            <div class="mt-2">
+                                <textarea
+                                    class="block w-full rounded-md bg-white px-3 py-1.5 text-base sm:text-sm/6"
+                                    id="vaccination_details"
+                                    name="vaccination_details"
+                                    value="{{ old('vaccination_details') }}"
+                                    rows="3"
+                                    placeholder="Vaccinated against rabies, distemper, and parvovirus."
+                                    maxlength="1000"
+                                    minlength="10"
+                                    required
+                                ></textarea>
+                            </div>
+                            @error('description')
+                                <span class="text-xs/snug font-semibold text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
+
 
                         <div class="col-span-full">
                             <label
@@ -244,6 +358,31 @@
 
 @push('scripts')
     <script>
+        const vaccinatedRadios = document.querySelectorAll('input[name="vaccinated"]');
+        const container = document.getElementById('vaccination-details-container');
+        const detailsInput = document.getElementById('vaccination_details');
+
+        if (document.getElementById('yes-vaccinated').checked) {
+            container.classList.remove('hidden');
+            detailsInput.required = true;
+        } else {
+            container.classList.add('hidden');
+            detailsInput.required = false;
+        }
+
+        vaccinatedRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (document.getElementById('yes-vaccinated').checked) {
+                    container.classList.remove('hidden');
+                    detailsInput.required = true;
+                } else {
+                    container.classList.add('hidden');
+                    detailsInput.required = false;
+                }
+            });
+        });
+
+
         const form = document.getElementById('create-pet-form');
         form.addEventListener('submit', (e) => {
             // Serialize captions map to object
@@ -323,7 +462,8 @@
                 );
                 editButton.addEventListener('click', () => {
                     currentEditingIndex = index;
-                    modalInput.value = captions[file.name] || '';
+                    const key = `${file.name}-${file.size}`;
+                    modalInput.value = captions[key] || '';
 
                     const reader = new FileReader();
                     reader.onload = (e) => {

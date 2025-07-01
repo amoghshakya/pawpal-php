@@ -8,7 +8,7 @@
 
 @section('content')
     <section class="p-2 md:p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2">
+        <div class="grid grid-cols-1 md:grid-cols-[40vw_1fr]">
             <div class="p-4">
                 <x-carousel :images="$pet->images" />
             </div>
@@ -27,14 +27,26 @@
                 </div>
                 <div class="mb-4">
                     <h4 class="text-lg font-semibold">Description</h2>
-                        <p class="text-gray-700">
-                            {{ $pet->description ?? 'No description provided.' }}
-                        </p>
+                        <pre class="whitespace-break-spaces font-sans text-sm text-gray-700">{{ $pet->description ?? 'No description provided.' }}</pre>
                 </div>
-                <div class="flex flex-col gap-4 text-sm text-gray-600">
-                    <div><strong>Breed:</strong> {{ $pet->breed ?? 'Unknown' }}</div>
-                    <div><strong>Age:</strong> {{ $pet->age }} years</div>
-                    <div><strong>Gender:</strong> {{ ucfirst($pet->gender) }}</div>
+                <div class="flex flex-col gap-4 text-sm">
+                    <h4 class="mb-2 mt-6 text-lg font-semibold">Details</h4>
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-2 text-sm text-gray-700 sm:grid-cols-2">
+                        <div><span class="font-semibold">Breed:</span> {{ $pet->breed ?? 'Unknown' }}</div>
+                        <div><span class="font-semibold">Age:</span> {{ $pet->age ?? 'Unknown' }}</div>
+                        <div><span class="font-semibold">Gender:</span> {{ ucfirst($pet->gender) }}</div>
+                        <div><span class="font-semibold">Vaccinated:</span> {{ $pet->vaccinated ? 'Yes' : 'No' }}</div>
+                        @if ($pet->vaccinated && $pet->vaccination_details)
+                            <div class="sm:col-span-2"><span class="font-semibold">Vaccination Details:</span>
+                                <pre class="mt-1 whitespace-pre-wrap font-sans text-sm">{{ $pet->vaccination_details }}</pre>
+                            </div>
+                        @endif
+                        @if ($pet->special_needs)
+                            <div class="sm:col-span-2"><span class="font-semibold">Special Needs:</span>
+                                <pre class="mt-1 whitespace-pre-wrap font-sans text-sm text-red-700">{{ $pet->special_needs }}</pre>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>

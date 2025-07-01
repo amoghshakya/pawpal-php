@@ -1,6 +1,6 @@
 @props(['pet'])
 
-<div class="rounded-lg bg-white p-4 shadow-md">
+<div class="rounded-lg bg-white p-4 shadow-md flex flex-col justify-between">
     <div class="flex items-center space-x-4">
         @php
             // This should never happen, but just in case
@@ -11,7 +11,7 @@
             }
         @endphp
         <img
-            class="md:w-3xl h-auto w-[80vw] rounded-md object-cover"
+            class="md:w-3xl aspect-square rounded-md object-cover"
             src="{{ asset('storage/' . $pet->images[0]->image_path) }}"
             alt="{{ $pet->name }}'s image"
         />
@@ -20,7 +20,7 @@
         <h3 class="text-xl font-semibold text-gray-900">
             {{ $pet->name }}
         </h3>
-        <p class="text-gray-700">{{ $pet->description }}</p>
+        <p class="truncate text-sm text-gray-700">{{ $pet->description }}</p>
     </div>
     <div class="mt-2 space-y-2">
         <x-badge>
