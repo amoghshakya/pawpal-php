@@ -20,6 +20,16 @@
                             {{ $pet->species }}
                         </span>
                     </div>
+                    <div>
+                        @can('edit', $pet)
+                            <x-nav-link
+                                href="{{ route('pets.edit', $pet->id) }}"
+                                variant="secondary"
+                            >
+                                Edit
+                            </x-nav-link>
+                        @endcan
+                    </div>
                 </div>
                 <div>
                     <p class="text-muted mb-4 text-sm">

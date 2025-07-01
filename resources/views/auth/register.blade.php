@@ -20,7 +20,8 @@
             <form
                 class="mb-4 space-y-2"
                 action="{{ route('register') }}"
-                method="POST"enctype="multipart/form-data"
+                method="POST"
+                enctype="multipart/form-data"
             >
                 @csrf
                 <div>
@@ -82,6 +83,7 @@
                             id="password"
                             name="password"
                             type="password"
+                            minlength="8"
                             autocomplete="current-password"
                             required
                         />

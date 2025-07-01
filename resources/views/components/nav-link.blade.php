@@ -2,7 +2,7 @@
 
 @php
     $base =
-        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 cursor-pointer ease-in-out';
+        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 cursor-pointer ease-in-out';
     $variants = [
         'link' => 'hover:text-primary/90 focus-visible:ring-primary/50 hover:underline underline-offset-2',
         'primary' =>

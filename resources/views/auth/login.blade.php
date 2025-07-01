@@ -16,7 +16,7 @@
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form
                 class="space-y-6"
-                action="#"
+                action="{{ route('login') }}"
                 method="POST"
             >
                 @csrf
@@ -28,6 +28,7 @@
                     <div class="mt-2">
                         <x-input
                             id="email"
+                            name="email"
                             type="email"
                             required
                             autofocus
