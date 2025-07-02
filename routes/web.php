@@ -26,6 +26,14 @@ Route::controller(PetController::class)->group(function () {
         ->middleware(['auth'])
         ->can('edit', 'pet')
         ->name('pets.update');
+        Route::patch('/pets/{pet}/edit', 'updateStatus')
+        ->middleware(['auth'])
+        ->can('edit', 'pet')
+        ->name('pets.update.status');
+    Route::delete('/pets/{pet}/delete', 'destroy')
+        ->middleware(['auth'])
+        ->can('delete', 'pet')
+        ->name('pets.delete');
     Route::get('/pets/{pet}/apply', 'apply')
         ->middleware(['auth'])
         ->can('applyAdoption', 'pet')

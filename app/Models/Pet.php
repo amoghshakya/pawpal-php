@@ -42,4 +42,9 @@ class Pet extends Model
     {
         return $this->hasMany(Favorite::class, 'pet_id');
     }
+
+    public function isAvailable()
+    {
+        return $this->status === 'available';
+    }
 }

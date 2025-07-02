@@ -199,7 +199,6 @@ class PetController extends Controller
 
     public function destroy(Pet $pet): RedirectResponse
     {
-        Gate::authorize('edit-pet', $pet);
         $pet->delete();
 
         return redirect()->route('pets.index')->with('success', 'Pet deleted successfully.');
@@ -226,5 +225,18 @@ class PetController extends Controller
 
         return redirect()->route('pets.show', $pet)
             ->with('success', 'Application submitted successfully.');
+    }
+
+    public function updateStatus(Request $request, Pet $pet): RedirectResponse
+    {
+        $data = $request->validate([
+            'status' => ['required', 'in:available,adopted'],
+        ]);
+
+        $pet->update([
+            'status' => $data['status'],
+        ]);
+
+        return redirect()->route('pets.update', $pet);
     }
 }

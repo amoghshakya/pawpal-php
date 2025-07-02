@@ -1,6 +1,6 @@
 /* fonts */
-@import url("../../public/fonts/inter.css");
-@import url("../../public/fonts/poppins.css");
+@import "../fonts/inter.css";
+@import "../fonts/poppins.css";
 @import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';

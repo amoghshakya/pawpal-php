@@ -1,6 +1,6 @@
 @props(['pet'])
 
-<div class="rounded-lg bg-white p-4 shadow-md flex flex-col justify-between">
+<div class="flex flex-col justify-between rounded-lg bg-white p-4 shadow-md">
     <div class="flex items-center space-x-4">
         @php
             // This should never happen, but just in case
@@ -30,7 +30,7 @@
             {{ $pet->breed }}
         </x-badge>
         <x-badge variant="secondary">
-            {{ $pet->age }} years old
+            {{ $pet->age }}
         </x-badge>
         <x-badge variant="{{ $pet->status === 'available' ? 'success' : 'stale' }}">
             {{ ucwords($pet->status) }}

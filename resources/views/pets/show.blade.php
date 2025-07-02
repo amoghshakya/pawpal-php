@@ -21,12 +21,12 @@
                                 variant="primary"
                             >Apply to Adopt</x-nav-link>
                         @else
-                        <x-button
-                            variant="disabled"
-                            class="cursor-not-allowed"
-                        >
-                            Already Applied
-                        </x-button>
+                            <x-button
+                                class="cursor-not-allowed"
+                                variant="disabled"
+                            >
+                                Already Applied
+                            </x-button>
                         @endcan
                     @else
                         <x-nav-link
@@ -45,6 +45,15 @@
                         <span class="text-primary text-xl font-semibold">
                             {{ $pet->species }}
                         </span>
+                        @if ($pet->isAvailable())
+                            <span class="ml-2 font-semibold text-green-600">
+                                Available for Adoption
+                            </span>
+                        @else
+                            <span class="ml-2 font-semibold text-gray-600">
+                                Not Available for Adoption
+                            </span>
+                        @endif
                     </div>
                     <div>
                         @can('edit', $pet)
@@ -52,7 +61,7 @@
                                 href="{{ route('pets.edit', $pet->id) }}"
                                 variant="secondary"
                             >
-                                Edit
+                                Edit Details
                             </x-nav-link>
                         @endcan
                     </div>

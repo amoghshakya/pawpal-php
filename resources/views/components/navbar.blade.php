@@ -5,7 +5,7 @@
             alt="PawPal Logo"
         />
     </div>
-    <ul class="font-body text-text hidden justify-around gap-2 text-xs font-medium uppercase tracking-wider lg:flex">
+    <ul class="font-body text-text hidden justify-around gap-2 text-xs! font-medium uppercase tracking-wider lg:flex">
         @foreach ($navlinks as $link)
             <li class="p-4">
                 <x-nav-link

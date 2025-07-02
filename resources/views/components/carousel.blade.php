@@ -23,7 +23,7 @@
                     <span>
                         {{ $image->caption }}
                     </span>
-                    <span class="text-xs opacity-80">
+                    <span class="opacity-80">
                         {{ $index + 1 . '/' . count($images) }}
                     </span>
                 </div>

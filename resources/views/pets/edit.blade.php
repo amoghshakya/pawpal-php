@@ -16,6 +16,93 @@
 @section('title', "Edit Listing for $pet->name")
 
 @section('content')
+    <x-banner variant="{{ $pet->status === 'available' ? 'default' : 'warning' }}">
+        <div class="flex flex-col items-center justify-center gap-2 md:flex-row md:justify-between">
+            <p class="px-2 text-sm/6 md:w-2/3">
+                @if ($pet->status === 'available')
+                    This listing is currently set as available for adoption. Please ensure all details are
+                    accurate before
+                    updating.
+                @else
+                    This listing is currently set as adopted. Users will not be able to apply for adoption while it is
+                    marked as adopted.
+                @endif
+            </p>
+            <div class="flex items-center gap-2">
+                <form
+                    id="toggle-status-form"
+                    method="POST"
+                    action="{{ route('pets.update.status', $pet) }}"
+                >
+                    @csrf
+                    @method('PATCH')
+                    @if ($pet->status === 'available')
+                        <input
+                            name="status"
+                            type="hidden"
+                            value="adopted"
+                        />
+                        <x-button
+                            type="submit"
+                            variant="secondary"
+                        >
+                            @svg('heroicon-o-check-circle', 'size-5')
+                            Mark as adopted
+                        </x-button>
+                    @else
+                        <input
+                            name="status"
+                            type="hidden"
+                            value="available"
+                        />
+                        <x-button
+                            type="submit"
+                            variant="secondary"
+                        >
+                            @svg('heroicon-o-plus-circle', 'size-5')
+                            Mark as available
+                        </x-button>
+                    @endif
+                </form>
+                <x-button
+                    id="delete-listing-button"
+                    variant="danger"
+                >
+                    @svg('heroicon-o-trash', 'size-5')
+                    Delete Listing
+                </x-button>
+            </div>
+        </div>
+    </x-banner>
+
+    {{-- Delete confirmation modal --}}
+    <x-modal
+        id="delete-confirmation-modal"
+        title="Delete {{ $pet->name }} listing?"
+    >
+        <form
+            class="flex flex-col items-center justify-center gap-4"
+            method="POST"
+            action="{{ route('pets.delete', $pet) }}"
+        >
+            @csrf
+            @method('DELETE')
+            <p class="text-sm/6 text-gray-600">
+                Are you sure you want to delete this listing? This action cannot be undone.
+            </p>
+            <div class="flex w-full items-center gap-2">
+                <x-button
+                    variant="secondary"
+                    onclick="document.getElementById('delete-confirmation-modal').classList.add('hidden')"
+                >Cancel</x-button>
+                <x-button
+                    type="submit"
+                    variant="danger"
+                >Delete</x-button>
+            </div>
+        </form>
+    </x-modal>
+
     <section class="p-8">
         <form
             id="create-pet-form"
@@ -27,7 +114,7 @@
             @method('PUT')
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
-                    <h2 class="text-base/7 font-semibold text-gray-900">Create a new pet listing</h2>
+                    <h2 class="text-base/7 font-semibold text-gray-900">Edit Details for {{ $pet->name }}</h2>
                     <p class="mt-1 text-sm/6 text-gray-600">
                         This information will be displayed publicly so please include key details about your pet.
                     </p>
@@ -261,7 +348,7 @@
                                 <span class="text-accent text-xs/snug">*</span>
                             </label>
                             <div
-                                class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
+                                class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 transition"
                                 id="drop-zone"
                             >
                                 <div class="text-center">
@@ -308,15 +395,14 @@
                 >Update</x-button>
         </form>
     </section>
-    <div
-        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50"
+    <x-modal
         id="caption-modal"
+        title="Edit Image Caption"
     >
-        <div class="m-auto rounded-lg bg-white p-4 shadow-lg md:w-1/2">
-            <h4 class="font-body mb-2 text-lg font-medium">Edit Caption</h4>
+        <div class="flex flex-col rounded-lg bg-white shadow-lg">
             {{-- Preview --}}
             <img
-                class="mx-auto mb-3 aspect-auto h-[70dvh] w-full rounded-md object-cover shadow"
+                class="aspect-4/3 mb-3 rounded-md object-cover shadow"
                 id="caption-modal-image"
                 src="#"
                 alt="Image preview"
@@ -340,11 +426,19 @@
                 >Save</x-button>
             </div>
         </div>
-    </div>
+    </x-modal>
 
 @endsection
 
 @push('scripts')
+    <script>
+        const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
+        const deleteListingButton = document.getElementById('delete-listing-button');
+
+        deleteListingButton.addEventListener('click', function() {
+            deleteConfirmationModal.classList.remove('hidden');
+        });
+    </script>
     {{-- Get existing images --}}
     <script>
         const existingImages = @json($photos);

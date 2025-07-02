@@ -229,7 +229,7 @@
                             >Photos
                             </x-label>
                             <div
-                                class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
+                                class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10 transition"
                                 id="drop-zone"
                             >
                                 <div class="text-center">
@@ -276,15 +276,14 @@
                 >Create Listing</x-button>
         </form>
     </section>
-    <div
-        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50"
+    <x-modal
         id="caption-modal"
+        title="Edit Image Caption"
     >
-        <div class="m-auto rounded-lg bg-white p-4 shadow-lg md:w-1/2">
-            <h4 class="font-body mb-2 text-lg font-medium">Edit Caption</h4>
+        <div class="flex flex-col rounded-lg bg-white shadow-lg">
             {{-- Preview --}}
             <img
-                class="mx-auto mb-3 aspect-auto h-[70dvh] w-full rounded-md object-cover shadow"
+                class="aspect-4/3 mb-3 rounded-md object-cover shadow"
                 id="caption-modal-image"
                 src="#"
                 alt="Image preview"
@@ -308,7 +307,7 @@
                 >Save</x-button>
             </div>
         </div>
-    </div>
+    </x-modal>
 
 
 @endsection
