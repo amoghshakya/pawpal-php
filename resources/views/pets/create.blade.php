@@ -20,12 +20,11 @@
 
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
                         <div class="">
-                            <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                            <x-label
                                 for="name"
+                                required
                             >Name
-                                <span class="text-accent text-xs/snug">*</span>
-                            </label>
+                            </x-label>
                             <div class="mt-2">
                                 <x-input
                                     id="name"
@@ -38,12 +37,11 @@
                         </div>
 
                         <div class="">
-                            <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                            <x-label
                                 for="species"
+                                required
                             >Species
-                                <span class="text-accent text-xs/snug">*</span>
-                            </label>
+                            </x-label>
                             <div class="mt-2">
                                 <x-input
                                     id="species"
@@ -56,12 +54,11 @@
                         </div>
 
                         <div class="">
-                            <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                            <x-label
                                 for="breed"
+                                required
                             >Breed
-                                <span class="text-accent text-xs/snug">*</span>
-                            </label>
+                            </x-label>
                             <div class="mt-2">
                                 <x-input
                                     id="breed"
@@ -75,12 +72,11 @@
 
                         <div class="grid grid-cols-2 gap-4">
                             <div class="">
-                                <label
-                                    class="block text-sm/6 font-medium text-gray-900"
+                                <x-label
                                     for="age"
+                                    required
                                 >Age
-                                    <span class="text-accent text-xs/snug">*</span>
-                                </label>
+                                </x-label>
                                 <div class="mt-2">
                                     <x-input
                                         id="age"
@@ -93,12 +89,11 @@
                             </div>
 
                             <div class="">
-                                <label
-                                    class="block text-sm/6 font-medium text-gray-900"
+                                <x-label
                                     for="gender"
+                                    required
                                 >Gender
-                                    <span class="text-accent text-xs/snug">*</span>
-                                </label>
+                                </x-label>
                                 <x-select-dropdown
                                     name="gender"
                                     selected="Unknown"
@@ -108,12 +103,11 @@
                         </div>
 
                         <div class="">
-                            <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                            <x-label
                                 for="location"
+                                required
                             >Location
-                                <span class="text-accent text-xs/snug">*</span>
-                            </label>
+                            </x-label>
                             <div class="mt-2">
                                 <x-input
                                     id="location"
@@ -127,10 +121,7 @@
 
                         <div class="grid grid-cols-2 gap-4">
                             <div class="">
-                                <label
-                                    class="block text-sm/6 font-medium text-gray-900"
-                                    for="special_needs"
-                                >Special Needs</label>
+                                <x-label for="special_needs">Special Needs</x-label>
                                 <div class="mt-2">
                                     <x-input
                                         id="special_needs"
@@ -142,12 +133,11 @@
                             </div>
 
                             <div class="">
-                                <label
-                                    class="block text-sm/6 font-medium text-gray-900"
+                                <x-label
                                     for="vaccinated"
+                                    required
                                 >Vaccinated
-                                    <span class="text-accent text-xs/snug">*</span>
-                                </label>
+                                </x-label>
                                 <div class="mt-2">
                                     <div class="flex items-center gap-8 rounded-md bg-white p-2">
                                         <div class="flex items-center">
@@ -187,12 +177,11 @@
                             class="col-span-full hidden"
                             id="vaccination-details-container"
                         >
-                            <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                            <x-label
                                 for="vaccination_details"
+                                required
                             >Vaccination Details
-                                <span class="text-accent text-xs/snug">*</span>
-                            </label>
+                            </x-label>
                             <div class="mt-2">
                                 <textarea
                                     class="block w-full rounded-md bg-white px-3 py-1.5 text-base sm:text-sm/6"
@@ -211,12 +200,11 @@
 
 
                         <div class="col-span-full">
-                            <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                            <x-label
                                 for="description"
+                                required
                             >About
-                                <span class="text-accent text-xs/snug">*</span>
-                            </label>
+                            </x-label>
                             <div class="mt-2">
                                 <textarea
                                     class="block w-full rounded-md bg-white px-3 py-1.5 text-base sm:text-sm/6"
@@ -235,12 +223,11 @@
                         </div>
 
                         <div class="col-span-full">
-                            <label
-                                class="block text-sm/6 font-medium text-gray-900"
+                            <x-label
                                 for="photos"
+                                required
                             >Photos
-                                <span class="text-accent text-xs/snug">*</span>
-                            </label>
+                            </x-label>
                             <div
                                 class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
                                 id="drop-zone"

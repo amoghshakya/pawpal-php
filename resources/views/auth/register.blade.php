@@ -252,6 +252,11 @@
         </div>
     </div>
 
+
+
+@endsection
+
+@push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('password');
@@ -327,6 +332,4 @@
             });
         });
     </script>
-
-
-@endsection
+@endpush

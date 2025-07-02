@@ -9,8 +9,34 @@
 @section('content')
     <section class="p-2 md:p-6">
         <div class="grid grid-cols-1 md:grid-cols-[40vw_1fr]">
-            <div class="p-4">
-                <x-carousel :images="$pet->images" />
+            <div>
+                <div class="p-4">
+                    <x-carousel :images="$pet->images" />
+                </div>
+                <div class="flex justify-center p-4">
+                    @auth
+                        @can('applyAdoption', $pet)
+                            <x-nav-link
+                                href="{{ route('pets.apply', $pet) }}"
+                                variant="primary"
+                            >Apply to Adopt</x-nav-link>
+                        @else
+                        <x-button
+                            variant="disabled"
+                            class="cursor-not-allowed"
+                        >
+                            Already Applied
+                        </x-button>
+                        @endcan
+                    @else
+                        <x-nav-link
+                            href="{{ route('login') }}"
+                            variant="secondary"
+                        >
+                            Login to Adopt
+                        </x-nav-link>
+                    @endauth
+                </div>
             </div>
             <div class="p-4">
                 <div class="mb-2 flex items-center justify-between">

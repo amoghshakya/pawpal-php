@@ -26,6 +26,14 @@ Route::controller(PetController::class)->group(function () {
         ->middleware(['auth'])
         ->can('edit', 'pet')
         ->name('pets.update');
+    Route::get('/pets/{pet}/apply', 'apply')
+        ->middleware(['auth'])
+        ->can('applyAdoption', 'pet')
+        ->name('pets.apply');
+    Route::post('/pets/{pet}/apply', 'applyStore')
+        ->middleware(['auth'])
+        ->can('applyAdoption', 'pet')
+        ->name('pets.apply.store');
 });
 
 Route::view('/login', 'auth.login')->middleware('guest')->name('login');

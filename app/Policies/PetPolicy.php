@@ -22,4 +22,8 @@ class PetPolicy
     {
         return $user->isLister();
     }
+    public function applyAdoption(User $user, Pet $pet): bool
+    {
+        return !$user->isLister() && $pet->lister()->isNot($user) && $pet->adoptionApplications->doesntContain('user_id', $user->id);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdoptionApplication;
 use App\Models\Pet;
 use App\Models\User;
 use Exception;
@@ -202,5 +203,28 @@ class PetController extends Controller
         $pet->delete();
 
         return redirect()->route('pets.index')->with('success', 'Pet deleted successfully.');
+    }
+
+    public function apply(Pet $pet): View
+    {
+        return view('pets.apply', ['pet' => $pet]);
+    }
+
+    public function applyStore(Request $request, Pet $pet): RedirectResponse
+    {
+        $data = $request->validate([
+            'message' => ['required', 'string', 'min:50', 'max:1000'],
+            'other_pets' => ['required', 'in:true,false,1,0'],
+            'other_pets_details' => ['nullable', 'string', 'min:50', 'max:1000'],
+            'living_conditions' => ['required', 'string', 'min:50', 'max:1000'],
+        ]);
+        $data['user_id'] = Auth::id();
+        $data['pet_id'] = $pet->id;
+        $data['status'] = 'pending';
+
+        $application = AdoptionApplication::create($data);
+
+        return redirect()->route('pets.show', $pet)
+            ->with('success', 'Application submitted successfully.');
     }
 }
