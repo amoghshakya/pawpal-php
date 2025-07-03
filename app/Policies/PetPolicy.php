@@ -10,20 +10,28 @@ class PetPolicy
 {
     public function edit(User $user, Pet $pet): bool
     {
-        return $pet->lister()->is($user);
+        return $pet->lister->is($user);
     }
 
     public function delete(User $user, Pet $pet): bool
     {
-        return $pet->lister()->is($user);
+        return $pet->lister->is($user);
     }
 
     public function create(User $user): bool
     {
         return $user->isLister();
     }
+
+    public function doesOwnPet(User $user, Pet $pet): bool
+    {
+        return $pet->lister->is($user);
+    }
+
     public function applyAdoption(User $user, Pet $pet): bool
     {
-        return !$user->isLister() && $pet->lister()->isNot($user) && $pet->adoptionApplications->doesntContain('user_id', $user->id);
+        return !$user->isLister()
+            && $pet->lister->isNot($user)
+            && $pet->adoptionApplications->doesntContain('user_id', $user->id);
     }
 }

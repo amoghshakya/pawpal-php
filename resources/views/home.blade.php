@@ -3,7 +3,9 @@
 @section('title', 'PawPal - Home')
 
 @section('header')
+<header>
     <x-Navbar />
+</header>
 @endsection
 
 @section('content')

@@ -14,28 +14,39 @@
                     <x-carousel :images="$pet->images" />
                 </div>
                 <div class="flex justify-center p-4">
-                    @auth
-                        @can('applyAdoption', $pet)
-                            <x-nav-link
-                                href="{{ route('pets.apply', $pet) }}"
-                                variant="primary"
-                            >Apply to Adopt</x-nav-link>
+                    @if ($pet->status === 'available')
+                        @auth
+                            @can('doesOwnPet', $pet)
+                            @elsecan('applyAdoption', $pet)
+                                <x-nav-link
+                                    href="{{ route('pets.apply', $pet) }}"
+                                    variant="primary"
+                                >Apply to Adopt</x-nav-link>
+                            @else
+                                <x-button
+                                    class="cursor-not-allowed"
+                                    variant="disabled"
+                                >
+                                    Already Applied
+                                </x-button>
+                            @endcan
                         @else
-                            <x-button
-                                class="cursor-not-allowed"
-                                variant="disabled"
+                            <x-nav-link
+                                href="{{ route('login') }}"
+                                variant="secondary"
                             >
-                                Already Applied
-                            </x-button>
-                        @endcan
+                                Login to Adopt
+                            </x-nav-link>
+                        @endauth
                     @else
-                        <x-nav-link
-                            href="{{ route('login') }}"
-                            variant="secondary"
+                        <x-button
+                            class="cursor-not-allowed"
+                            variant="disabled"
                         >
-                            Login to Adopt
-                        </x-nav-link>
-                    @endauth
+                            Not Available for Adoption
+                        </x-button>
+                    @endif
+
                 </div>
             </div>
             <div class="p-4">

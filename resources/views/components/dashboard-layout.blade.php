@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
     <head>
         <meta charset="UTF-8">
@@ -17,9 +17,9 @@
         ></script>
     </head>
 
-    <body class="h-full">
+    <body>
         @yield('header')
-        <main>
+        <main class="px-4 py-6 pt-16 md:ml-72">
             @yield('content')
         </main>
         <footer>

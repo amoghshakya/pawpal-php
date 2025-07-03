@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PetController;
 use App\Models\Pet;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
@@ -26,7 +27,7 @@ Route::controller(PetController::class)->group(function () {
         ->middleware(['auth'])
         ->can('edit', 'pet')
         ->name('pets.update');
-        Route::patch('/pets/{pet}/edit', 'updateStatus')
+    Route::patch('/pets/{pet}/edit', 'updateStatus')
         ->middleware(['auth'])
         ->can('edit', 'pet')
         ->name('pets.update.status');
@@ -43,6 +44,24 @@ Route::controller(PetController::class)->group(function () {
         ->can('applyAdoption', 'pet')
         ->name('pets.apply.store');
 });
+
+Route::get("/dashboard", function () {
+    return view('dashboard.index');
+})
+    ->middleware(['auth'])
+    ->can('accessDashboard')
+    ->name('dashboard.index');
+Route::get('/dashboard/pets', function () {
+    $pets = Pet::orderBy('created_at')
+        ->where('user_id', Auth::user()->id)
+        ->paginate(10);
+    return view('dashboard.pets', [
+        'pets' => $pets,
+    ]);
+})
+    ->middleware(['auth'])
+    ->can('accessDashboard')
+    ->name('dashboard.pets');
 
 Route::view('/login', 'auth.login')->middleware('guest')->name('login');
 Route::post('/login', [AuthController::class, 'authenticate'])->middleware('guest');

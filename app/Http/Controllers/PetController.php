@@ -18,7 +18,9 @@ class PetController extends Controller
 {
     public function index(): View
     {
-        $pets = Pet::with(['lister', 'images'])->simplePaginate(10); // 10 pets per page
+        $pets = Pet::orderBy('created_at', 'desc')
+            ->with(['lister', 'images', 'adoptionApplications'])
+            ->simplePaginate(10); // 10 pets per page
         return view('pets.index', compact('pets'));
     }
 
@@ -201,7 +203,7 @@ class PetController extends Controller
     {
         $pet->delete();
 
-        return redirect()->route('pets.index')->with('success', 'Pet deleted successfully.');
+        return redirect()->route('dashboard.pets')->with('success', 'Pet deleted successfully.');
     }
 
     public function apply(Pet $pet): View

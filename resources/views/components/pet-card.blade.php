@@ -4,15 +4,19 @@
     <div class="flex items-center space-x-4">
         @php
             // This should never happen, but just in case
-            if (isset($pet->images[0])) {
-                $imagePath = asset('storage/' . $pet->images[0]->image_path);
-            } else {
-                $imagePath = asset('images/default-pet.png'); // Fallback image
+            try {
+                if (isset($pet->images[0])) {
+                    $imagePath = asset('storage/' . $pet->images[0]->image_path);
+                } else {
+                    $imagePath = asset('bad_dog.jpg'); // Fallback image
+                }
+            } catch (Exception $e) {
+                $imagePath = asset('public/bad_dog.jpg'); // Fallback image
             }
         @endphp
         <img
             class="md:w-3xl aspect-square rounded-md object-cover"
-            src="{{ asset('storage/' . $pet->images[0]->image_path) }}"
+            src="{{ $imagePath ?? asset('storage/' . $pet->images[0]->image_path) }}"
             alt="{{ $pet->name }}'s image"
         />
     </div>
