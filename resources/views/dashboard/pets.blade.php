@@ -17,7 +17,7 @@
             </div>
             <div>
                 <x-nav-link
-                    href="{{ route('pets.create') }}"
+                    href="{{ route('dashboard.pets.create') }}"
                     variant="primary"
                 >
                     @svg('heroicon-o-plus', 'size-5')

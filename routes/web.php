@@ -3,16 +3,18 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PetController;
 use App\Models\Pet;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'home')->name('home');
 
 Route::controller(PetController::class)->group(function () {
-    Route::get('/pets/create', 'create')
+    Route::get('/dashboard/pets/create', 'create')
         ->middleware(['auth'])
         ->can('create', Pet::class)
-        ->name('pets.create');
+        ->can('accessDashboard', User::class)
+        ->name('dashboard.pets.create');
     Route::post('/pets/create', 'store')
         ->middleware('auth')
         ->can('create', Pet::class)
@@ -49,7 +51,7 @@ Route::get("/dashboard", function () {
     return view('dashboard.index');
 })
     ->middleware(['auth'])
-    ->can('accessDashboard')
+    ->can('accessDashboard', User::class)
     ->name('dashboard.index');
 Route::get('/dashboard/pets', function () {
     $pets = Pet::orderBy('created_at')
@@ -60,7 +62,7 @@ Route::get('/dashboard/pets', function () {
     ]);
 })
     ->middleware(['auth'])
-    ->can('accessDashboard')
+    ->can('accessDashboard', User::class)
     ->name('dashboard.pets');
 
 Route::view('/login', 'auth.login')->middleware('guest')->name('login');

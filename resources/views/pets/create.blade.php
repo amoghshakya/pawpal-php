@@ -1,4 +1,8 @@
-@extends('components.base-layout')
+@extends('components.dashboard-layout')
+
+@section('header')
+    <x-dashboard-navbar title="Create" />
+@endsection
 
 @section('title', 'Create Pet')
 

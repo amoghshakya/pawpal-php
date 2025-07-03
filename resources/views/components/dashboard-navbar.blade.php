@@ -1,16 +1,32 @@
 @props(['title' => 'Dashboard'])
+
+@php
+    use Illuminate\Support\Str;
+    $currentRoute = request()->route()->getName();
+@endphp
+
 <aside class="bg-primary fixed left-0 top-0 hidden h-screen w-72 flex-col justify-between px-4 py-2 md:flex">
     <div class="flex flex-col justify-between gap-8">
         <div>LOGO</div>
 
         <ul class="text-bg w-full space-y-1 text-sm font-medium">
             @foreach ($links as $link)
+                @php
+                    $routeName = request()->route()->getName();
+                    $isActive = match ($link['route']) {
+                        'dashboard.index' => $routeName === 'dashboard.index',
+                        'dashboard.pets' => str_starts_with($routeName, 'dashboard.pets'),
+                        'dashboard.adoptions' => str_starts_with($routeName, 'dashboard.') &&
+                            !in_array($routeName, ['dashboard.index', 'dashboard.pets', 'dashboard.pets.create']),
+                        default => false,
+                    };
+                @endphp
                 <li>
                     <a
-                        class="{{ request()->routeIs($link['route']) ? 'bg-text/20' : '' }} hover:no-underline! hover:bg-text/10 flex items-center gap-2 rounded-md px-4 py-2"
+                        class="{{ $isActive ? 'bg-text/20 font-semibold' : '' }} hover:no-underline! hover:bg-text/10 flex items-center gap-2 rounded-md px-4 py-2"
                         href="{{ route($link['route']) }}"
                     >
-                        @svg(request()->routeIs($link['route']) ? $link['activeIcon'] : $link['icon'], 'size-5')
+                        @svg($isActive ? $link['activeIcon'] : $link['icon'], 'size-5')
                         {{ $link['name'] }}
                     </a>
                 </li>
