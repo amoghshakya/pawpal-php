@@ -19,7 +19,7 @@
 
     <body>
         @yield('header')
-        <main class="px-4 py-6 pt-16 md:ml-72">
+        <main class="md:ml-72 md:mt-14">
             @yield('content')
         </main>
         <footer>

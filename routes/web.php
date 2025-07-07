@@ -21,7 +21,7 @@ Route::controller(PetController::class)->group(function () {
         ->name('pets.store');
     Route::get('/pets', 'index')->name('pets.index');
     Route::get('/pets/{pet}', 'show')->name('pets.show');
-    Route::get('/pets/{pet}/edit', 'edit')
+    Route::get('/dashboard/pets/{pet}/edit', 'edit')
         ->middleware(['auth'])
         ->can('edit', 'pet')
         ->name('pets.edit');
@@ -45,6 +45,11 @@ Route::controller(PetController::class)->group(function () {
         ->middleware(['auth'])
         ->can('applyAdoption', 'pet')
         ->name('pets.apply.store');
+    // Search route
+    Route::get('/dashboard/pets/search', 'searchDashboard')
+        ->middleware(['auth'])
+        ->can('accessDashboard', User::class)
+        ->name('dashboard.pets.search');
 });
 
 Route::get("/dashboard", function () {

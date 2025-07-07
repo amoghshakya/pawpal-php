@@ -11,7 +11,11 @@
         ->toArray();
 @endphp
 
-@extends('components.base-layout')
+@extends('components.dashboard-layout')
+
+@section('header')
+    <x-dashboard-navbar title="Edit Listing" />
+@endsection
 
 @section('title', "Edit Listing for $pet->name")
 

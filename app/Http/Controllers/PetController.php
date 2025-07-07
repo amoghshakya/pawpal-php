@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+use function Laravel\Prompts\search;
+
 class PetController extends Controller
 {
     public function index(): View
@@ -240,5 +242,26 @@ class PetController extends Controller
         ]);
 
         return redirect()->route('pets.update', $pet);
+    }
+
+    public function searchDashboard()
+    {
+        $query = Pet::where('user_id', Auth::id());
+
+        if ($search = request('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('species', 'like', "%{$search}%")
+                    ->orWhere('breed', 'like', "%{$search}%");
+            });
+        }
+
+        $pets = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('components.table', [
+            'headers' => ['name', 'species', 'breed', 'created_at', 'updated_at', 'status'],
+            'rows' => $pets,
+            'actionsSlot' => fn($pet) => view('components.partials.table-actions', ['id' => $pet->id])
+        ])->render();
     }
 }

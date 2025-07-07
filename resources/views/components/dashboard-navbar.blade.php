@@ -15,7 +15,8 @@
                     $routeName = request()->route()->getName();
                     $isActive = match ($link['route']) {
                         'dashboard.index' => $routeName === 'dashboard.index',
-                        'dashboard.pets' => str_starts_with($routeName, 'dashboard.pets'),
+                        'dashboard.pets' => str_starts_with($routeName, 'dashboard.pets') ||
+                            str_starts_with($routeName, 'pets.edit'),
                         'dashboard.adoptions' => str_starts_with($routeName, 'dashboard.') &&
                             !in_array($routeName, ['dashboard.index', 'dashboard.pets', 'dashboard.pets.create']),
                         default => false,

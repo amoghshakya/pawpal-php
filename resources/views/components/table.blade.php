@@ -51,4 +51,8 @@
             @endforelse
         </tbody>
     </table>
+    {{-- Pagination --}}
+    <div class="p-4">
+        {{ $rows->links() }}
+    </div>
 </div>

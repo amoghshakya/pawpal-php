@@ -6,7 +6,7 @@
         @svg('heroicon-o-pencil-square', 'w-5 h-5')
     </a>
     <button
-        class="text-red-600 hover:text-red-800 cursor-pointer"
+        class="cursor-pointer text-red-600 hover:text-red-800"
         type="submit"
         onclick="document.getElementById('delete-confirmation-modal').classList.remove('hidden')"
     >
