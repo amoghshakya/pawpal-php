@@ -244,8 +244,12 @@ class PetController extends Controller
         return redirect()->route('pets.update', $pet);
     }
 
-    public function searchDashboard()
+    // AJAX search for the dashboard pets table
+    public function searchDashboard(Request $request)
     {
+        if (!$request->ajax()) {
+            abort(403, 'Unauthorized action.');
+        }
         $query = Pet::where('user_id', Auth::id());
 
         if ($search = request('search')) {
