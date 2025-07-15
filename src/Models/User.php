@@ -2,22 +2,25 @@
 
 namespace App\Models;
 
+use App\Config\Database;
 use PDO;
 
-class User
+class User extends Model
 {
-    private PDO $db;
-    private int $id;
+    public int $id;
     public string $name;
-    private string $email;
-    private string $password;
-    private string $role;
-    private string $created_at;
+    public string $email;
+    public string $phone;
+    public string $address;
+    public string $city;
+    public string $state;
+    public string $role;
+    public ?string $created_at;
+    public ?string $updated_at;
 
 
-    public function __construct(PDO $db, array $data = [])
+    public function __construct(array $data = [])
     {
-        $this->db = $db;
         foreach ($data as $key => $value) {
             if (property_exists($this, $key)) {
                 $this->$key = $value;
@@ -25,32 +28,48 @@ class User
         }
     }
 
-    public function findByEmail(string $email)
+    public static function findByEmail(string $email)
     {
-        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = ?");
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function create(string $name, string $email, string $password, $role = 'adopter')
+    public static function create(array $data): ?self
     {
-        $hash = password_hash($password, PASSWORD_BCRYPT);
-        $stmt = $this->db->prepare(
+        $user = new self($data);
+        $db = Database::getConnection();
+        $stmt = $db->prepare(
             "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)"
         );
-        return $stmt->execute([$name, $email, $hash, $role]);
+        if ($stmt->execute([$user->name, $user->email, $user->password, $user->role])) {
+            $user->id = $db->lastInsertId();
+            return $user;
+        }
+        return null;
     }
 
-    public static function findById(PDO $db, int $id): ?self
+    public static function find(int $id): ?self
     {
+        $db = Database::getConnection();
         $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
-            return new self($db, $data);
+            return new self($data);
         }
 
         return null;
+    }
+
+    public static function all(): array
+    {
+        $db = Database::getConnection();
+        $stmt = $db->query("SELECT * FROM users");
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($user) => new self($user), $users);
     }
 }

@@ -2,21 +2,22 @@
 
 namespace App\Controllers;
 
+use App\Config\Database;
 use App\Models\Pet;
 
 class PetController
 {
-    private \PDO $db;
+    private Pet $petModel;
 
-    public function __construct(\PDO $db)
+    public function __construct()
     {
-        $this->db = $db;
+        $this->petModel = new Pet();
     }
 
     // NOTE: Index Page logic
     public function index()
     {
-        $pets = Pet::getAll($this->db);
+        $pets = Pet::all();
         include __DIR__ . '/../Views/pets/index.php';
     }
 
@@ -36,7 +37,7 @@ class PetController
                 }
             }
 
-            $pet = new Pet($this->db, $data);
+            $pet = new Pet($data);
             if ($pet->save()) {
                 // Handle file uploads
                 $pet_id = $pet->getId();
@@ -72,8 +73,9 @@ class PetController
                     }
                 }
 
+                $db = Database::getConnection();
                 // Save image paths to the database
-                $stmt = $this->db->prepare("INSERT INTO pet_images (pet_id, image_path) VALUES (?, ?)");
+                $stmt = $db->prepare("INSERT INTO pet_images (pet_id, image_path) VALUES (?, ?)");
                 foreach ($uploadedImagesNames as $imagePath) {
                     $stmt->execute([$pet_id, $imagePath]);
                 }

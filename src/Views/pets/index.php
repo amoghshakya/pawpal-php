@@ -11,26 +11,26 @@
                     width="100"
                     draggable="false" />
             <?php endforeach; ?>
-            <strong><?php echo htmlspecialchars($pet->getName()); ?></strong>
-            (<?php echo htmlspecialchars($pet->getSpecies()); ?>,
-            <?php echo htmlspecialchars($pet->getLocation()); ?>)
+            <strong><?php echo htmlspecialchars($pet->name); ?></strong>
+            (<?php echo htmlspecialchars($pet->species); ?>,
+            <?php echo htmlspecialchars($pet->location); ?>)
             <p>
-                <?php echo htmlspecialchars($pet->getDescription() ?: 'No description available.'); ?>
+                <?php echo htmlspecialchars($pet->description ?: 'No description available.'); ?>
             </p>
             <p>
-                <strong>Breed:</strong> <?php echo htmlspecialchars($pet->getBreed() ?: 'Unknown'); ?><br>
+                <strong>Breed:</strong> <?php echo htmlspecialchars($pet->breed ?: 'Unknown'); ?><br>
             </p>
             <p>
-                <strong>Age:</strong> <?php echo htmlspecialchars($pet->getAge() ?: 'Unknown'); ?><br>
+                <strong>Age:</strong> <?php echo htmlspecialchars($pet->age ?: 'Unknown'); ?><br>
             </p>
             <p>
                 <strong>Availability: </strong>
-                <?php echo htmlspecialchars($pet->getStatus()->name); ?>
+                <?php echo htmlspecialchars($pet->status()->name); ?>
             </p>
             <p>
                 <strong>
                     Location: </strong>
-                <?php echo htmlspecialchars($pet->getLocation()); ?>
+                <?php echo htmlspecialchars($pet->location); ?>
             </p>
         </div>
     <?php endforeach; ?>

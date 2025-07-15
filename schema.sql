@@ -11,37 +11,48 @@ DROP TABLE IF EXISTS users;
 
 -- Users
 CREATE TABLE users (
-  id INT PRIMARY KEY AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   email VARCHAR(100) NOT NULL UNIQUE,
+  phone VARCHAR(20) NOT NULL,
   password VARCHAR(255) NOT NULL,
   role ENUM ('adopter', 'lister') NOT NULL DEFAULT 'adopter',
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  address VARCHAR(255) NOT NULL,
+  city VARCHAR(100) NOT NULL,
+  state VARCHAR(100) NOT NULL,
+  profile_image VARCHAR(255) DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Pets
 CREATE TABLE pets (
-  id INT PRIMARY KEY AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   name VARCHAR(100) NOT NULL,
-  species VARCHAR(50) NOT NULL,
-  breed VARCHAR(50),
-  age INT,
+  species VARCHAR(100) NOT NULL,
+  breed VARCHAR(100),
+  age VARCHAR(50), -- e.g., "2 years", "6 months" pretty flexible
   gender ENUM ('male', 'female', 'unknown') NOT NULL DEFAULT 'unknown',
   description TEXT,
+  vaccinated BOOLEAN DEFAULT FALSE,
+  vaccination_details TEXT,
+  special_needs TEXT,
+  location VARCHAR(255) NOT NULL,
   status ENUM ('available', 'adopted') NOT NULL DEFAULT 'available',
-  location VARCHAR(100) NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 -- Pet Images
 CREATE TABLE pet_images (
-  id INT PRIMARY KEY AUTO_INCREMENT,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   pet_id INT NOT NULL,
   image_path VARCHAR(255) NOT NULL,
   caption VARCHAR(255),
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (pet_id) REFERENCES pets (id) ON DELETE CASCADE
 );
 
@@ -52,9 +63,12 @@ CREATE TABLE adoption_applications (
   user_id INT NOT NULL,
   message TEXT,
   has_other_pets BOOLEAN DEFAULT FALSE,
-  living_conditions VARCHAR(255),
+  other_pets_details TEXT,
+  living_conditions TEXT,
   status ENUM ('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
-  submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  reviewed_at DATETIME DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (pet_id) REFERENCES pets (id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
@@ -65,7 +79,8 @@ CREATE TABLE favorites (
   user_id INT NOT NULL,
   pet_id INT NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_fav_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-  CONSTRAINT fk_fav_pet FOREIGN KEY (pet_id) REFERENCES pets (id) ON DELETE CASCADE,
-  CONSTRAINT unique_fav UNIQUE (user_id, pet_id)
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_favorite (user_id, pet_id),
+  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  FOREIGN KEY (pet_id) REFERENCES pets (id) ON DELETE CASCADE
 );

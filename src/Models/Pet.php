@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Config\Database;
 use PDO;
 
 enum GenderValues: string
@@ -17,24 +18,26 @@ enum PetStatus: string
   case adopted = 'adopted';
 }
 
-class Pet
+class Pet extends Model
 {
-
-  private PDO $db;
-
-  private ?int $id = null;
+  public int $id;
+  public int $user_id;
   public string $name;
   public string $species;
-  private ?string $breed = null;
-  private ?int $age = null;
-  private GenderValues $gender;
-  private ?string $description = null;
-  private PetStatus $status = PetStatus::available;
-  private string $location;
+  public string $breed;
+  public string $age;
+  public GenderValues $gender;
+  public string $description;
+  public bool $vaccinated = false;
+  public ?string $vaccination_details = null;
+  public PetStatus $status = PetStatus::available;
+  public string $location;
+  public ?string $special_needs = null;
+  public string $created_at;
+  public string $updated_at;
 
-  public function __construct(PDO $db, array $data = [])
+  public function __construct(array $data = [])
   {
-    $this->db = $db;
     foreach ($data as $key => $value) {
       if (property_exists($this, $key)) {
         if ($key === 'gender') {
@@ -48,16 +51,21 @@ class Pet
     }
   }
 
-  public function getId(): ?int
+  public static function create(array $data): ?self
   {
-    return $this->id;
+    $pet = new self($data);
+    if ($pet->save()) {
+      return $pet;
+    }
+    return null;
   }
 
   public function save()
   {
+    $db = Database::getConnection();
     if (isset($this->id)) {
       // Update existing pet
-      $stmt = $this->db->prepare(
+      $stmt = $db->prepare(
         "UPDATE pets SET name = ?, species = ?, breed = ?, age = ?, gender = ?, description = ?, status = ?, location = ? WHERE id = ?"
       );
       return $stmt->execute([
@@ -73,7 +81,7 @@ class Pet
       ]);
     } else {
       // Create new pet 
-      $stmt = $this->db->prepare(
+      $stmt = $db->prepare(
         "INSERT INTO pets (user_id, name, species, breed, age, gender, description, status, location) "
           . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
       );
@@ -89,123 +97,51 @@ class Pet
         $this->location
       ]);
       if ($result) {
-        $this->id = $this->db->lastInsertId();
+        $this->id = $db->lastInsertId();
         return true;
       }
       return false;
     }
   }
 
-  public static function findById(PDO $db, int $id): ?self
+  public static function find(int $id): ?self
   {
+    $db = Database::getConnection();
     $stmt = $db->prepare("SELECT * FROM pets WHERE id = ?");
     $stmt->execute([$id]);
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($data) {
-      return new self($db, $data);
+      return new self($data);
     }
     return null;
   }
 
-  public static function getAll(PDO $db)
+  public static function all(): array
   {
+    $db = Database::getConnection();
     $stmt = $db->prepare("SELECT * FROM pets;");
     $stmt->execute();
     $pets = [];
     while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $pets[] = new self($db, $data);
+      $pets[] = new self($data);
     }
     return $pets;
   }
 
-  public function getName(): string
-  {
-    return $this->name;
-  }
-
-  public function getSpecies(): string
-  {
-    return $this->species;
-  }
-
-  public function getBreed(): ?string
-  {
-    return $this->breed;
-  }
-
-  public function getAge(): ?int
-  {
-    return $this->age;
-  }
-
-  public function getGender(): GenderValues
-  {
-    return $this->gender;
-  }
-
-  public function getDescription(): ?string
-  {
-    return $this->description;
-  }
-
-  public function getStatus(): PetStatus
-  {
-    return $this->status;
-  }
-
-  public function getLocation(): string
-  {
-    return $this->location;
-  }
-
-  public function setName(string $name): void
-  {
-    $this->name = $name;
-  }
-
-  public function setSpecies(string $species): void
-  {
-    $this->species = $species;
-  }
-
-  public function setBreed(?string $breed): void
-  {
-    $this->breed = $breed;
-  }
-
-  public function setAge(?int $age): void
-  {
-    $this->age = $age;
-  }
-
-  public function setGender(GenderValues $gender): void
-  {
-    $this->gender = $gender;
-  }
-
-  public function setDescription(?string $description): void
-  {
-    $this->description = $description;
-  }
-
-  public function setStatus(PetStatus $status): void
-  {
-    $this->status = $status;
-  }
-
-  public function setLocation(string $location): void
-  {
-    $this->location = $location;
-  }
-
   public function getImages(): array
   {
-    $stmt = $this->db->prepare("SELECT * FROM pet_images WHERE pet_id = ?");
+    $db = Database::getConnection();
+    $stmt = $db->prepare("SELECT * FROM pet_images WHERE pet_id = ?");
     $stmt->execute([$this->id]);
     $images = [];
     while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
       $images[] = $data['image_path'];
     }
     return $images;
+  }
+
+  public function status(): PetStatus
+  {
+    return $this->status;
   }
 }

@@ -44,7 +44,7 @@ $pageTitle = "PawPal - Home";
         <h1>Hello,
             <?php
             if (isset($_SESSION['user_id'])) {
-                $user = User::findById($pdo, $_SESSION['user_id']);
+                $user = User::find($_SESSION['user_id']);
                 echo htmlspecialchars($user->name);
             } else {
                 echo 'Guest';
@@ -53,7 +53,7 @@ $pageTitle = "PawPal - Home";
         </h1>
     </header>
     <main>
-        <img src="<?php echo $_ENV['UPLOAD_DIR'] . 'dog.jpeg'; ?>" width='150px' />
+        <img src="<?= $_ENV['UPLOAD_DIR'] . 'dog.jpeg'; ?>" width='150px' />
     </main>
 </body>
 
