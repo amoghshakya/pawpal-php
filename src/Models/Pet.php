@@ -86,7 +86,7 @@ class Pet extends Model
           . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
       );
       $result = $stmt->execute([
-        $_SESSION['user_id'],
+        $this->user_id ?? $_SESSION['user_id'],
         $this->name,
         $this->species,
         $this->breed,

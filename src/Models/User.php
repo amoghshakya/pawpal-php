@@ -10,6 +10,7 @@ class User extends Model
     public int $id;
     public string $name;
     public string $email;
+    public string $password;
     public string $phone;
     public string $address;
     public string $city;
@@ -28,12 +29,16 @@ class User extends Model
         }
     }
 
-    public static function findByEmail(string $email)
+    public static function findByEmail(string $email): ?self
     {
         $db = Database::getConnection();
         $stmt = $db->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($data) {
+            return new self($data);
+        }
+        return null;
     }
 
     public static function create(array $data): ?self
@@ -41,10 +46,24 @@ class User extends Model
         $user = new self($data);
         $db = Database::getConnection();
         $stmt = $db->prepare(
-            "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)"
+            "INSERT INTO users (name, email, password, phone, address, city, state, role)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         );
-        if ($stmt->execute([$user->name, $user->email, $user->password, $user->role])) {
+        $hashedPassword = password_hash($user->password, PASSWORD_BCRYPT);
+        $success = $stmt->execute([
+            $user->name,
+            $user->email,
+            $hashedPassword,
+            $user->phone,
+            $user->address,
+            $user->city,
+            $user->state,
+            $user->role ?? 'adopter'
+        ]);
+
+        if ($success) {
             $user->id = $db->lastInsertId();
+            $user->created_at = date('Y-m-d H:i:s');
             return $user;
         }
         return null;

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Config\Database;
 use App\Models\Pet;
+use App\Models\PetImage;
 
 class PetController
 {
@@ -21,71 +22,153 @@ class PetController
         include __DIR__ . '/../Views/pets/index.php';
     }
 
+    private function validatePetData(array $data, array $files): array
+    {
+        $errors = [];
+
+        // Validate required fields
+        $requiredFields = ['name', 'species', 'breed', 'age', 'gender', 'location'];
+
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                $errors[$field] = "The field '$field' is required.";
+            } else if (strlen($data[$field]) > 255) {
+                $errors[$field] = "The field '$field' must not exceed 255 characters.";
+            }
+        }
+
+        // Check for description
+        if (empty($data['description'])) {
+            $errors['description'] = "The description field is required.";
+        } else if (strlen($data['description']) > 2000) {
+            $errors['description'] = "The description must not exceed 2000 characters.";
+        }
+
+        // Validate length for name, species, breed
+        foreach (['name', 'species', 'breed'] as $field) {
+            if (isset($data[$field]) && strlen($data[$field]) < 2) {
+                $errors[$field] = "The field '$field' must be at least 2 characters long.";
+            }
+        }
+
+        // validate for description
+        // allow for details
+        if (strlen($data['description']) < 100) {
+            $errors['description'] = "The description must be at least 100 characters long.";
+        }
+
+        // vaccinated and vaccination details
+        // if vaccinated is true, vaccination_details must be provided
+        if ($data['vaccinated'] === 'true' && empty($data['vaccination_details'])) {
+            $errors['vaccination_details'] = "Vaccination details are required if the pet is vaccinated.";
+        } else if ($data['vaccinated'] === 'false') {
+            $data['vaccination_details'] = null; // Clear vaccination details if not vaccinated
+        }
+
+        // also check for files
+        // 1. at least one image must be uploaded
+        // 2. file mime type must be an image
+        if (empty($files['images']['name'][0])) {
+            $errors['images'] = "At least one image must be uploaded.";
+        } else {
+            foreach ($files['images']['tmp_name'] as $index => $tmpName) {
+                if ($files['images']['error'][$index] !== UPLOAD_ERR_OK) {
+                    continue; // Skip files with upload errors
+                }
+                $fileType = mime_content_type($tmpName);
+                if (strpos($fileType, 'image/') !== 0) {
+                    $errors['images'] = "Uploaded files must be images.";
+                    break;
+                }
+            }
+        }
+
+
+        return $errors;
+    }
+
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = $_POST;
-            $data['gender'] = $data['gender'] ?? 'unknown';
-            $data['status'] = $data['status'] ?? 'available'; // This shouldn't make sense, but let's keep it for consistency
+            $errors = $this->validatePetData($_POST, $_FILES);
 
+            if (empty($errors)) {
+                $data = [
+                    'name' => $_POST['name'],
+                    'species' => $_POST['species'],
+                    'breed' => $_POST['breed'],
+                    'age' => $_POST['age'],
+                    'gender' => $_POST['gender'] ?? 'unknown',
+                    'location' => $_POST['location'],
+                    'special_needs' => $_POST['special_needs'] ?? null,
+                    'description' => $_POST['description'],
+                    'vaccinated' => $_POST['vaccinated'] === 'true',
+                    'vaccination_details' => $_POST['vaccination_details'] ?? null,
+                ];
+                $pet = Pet::create($data);
+                if ($pet) {
+                    // Upload images and captions
+                    // The captions are mapped in a JSON as file => caption
+                    $imageCaptions = [];
+                    if (isset($_POST['captions_json'])) {
+                        $imageCaptions = json_decode($_POST['captions_json'], true);
+                    }
+                    // $_ENV['UPLOAD_DIR'] has the base upload directory
+                    $projectRoot = dirname(__DIR__, 2); // go back two directories
+                    $uploadBase = rtrim($projectRoot . '/' . getenv('UPLOAD_DIR'), '/');
+                    $uploadDir = $uploadBase . '/pets/' . $pet->id . '/';
+                    // create the upload directory if it doesn't exist
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+                    $uploadedImages = [];
 
-            foreach ($data as $key => $value) {
-                if (is_array($value)) {
-                    echo $key . ': [Array] <br>';
-                } else {
-                    echo $key . ': ' . htmlspecialchars($value) . '<br>';
-                }
-            }
+                    // The caption keys are in the format filename-filesize
+                    // e.g., image.jpeg-10763
+                    foreach ($_FILES['images']['tmp_name'] as $index => $tmpName) {
+                        if ($_FILES['images']['error'][$index] === UPLOAD_ERR_OK) {
+                            $fileName = $_FILES['images']['name'][$index];
+                            $fileSize = $_FILES['images']['size'][$index];
+                            $filePath = $uploadDir . basename($fileName);
 
-            $pet = new Pet($data);
-            if ($pet->save()) {
-                // Handle file uploads
-                $pet_id = $pet->getId();
-                $uploadBaseDir = __DIR__ . '/../../uploads/pets/';
-                $petDir = $uploadBaseDir . $pet_id . '/';
+                            // Move the uploaded file to the upload dir 
+                            $fileMoved = move_uploaded_file($tmpName, $filePath);
+                            if ($fileMoved) {
+                                // Save the image path and caption to pet_images table
+                                $captionKey = $fileName . '-' . $fileSize;
+                                $caption = isset($imageCaptions[$captionKey]) ? $imageCaptions[$captionKey] : null;
 
-                if (!is_dir($petDir)) {
-                    mkdir($petDir, 0755, true);
-                }
+                                $uploadedImages[] = [
+                                    'pet_id' => $pet->id,
+                                    'image_path' => '/uploads/pets/' . $pet->id . '/' . basename($fileName),
+                                    'caption' => $caption
+                                ];
 
-                $uploadedImagesNames = [];
+                                // Save image and caption data to the database
+                                $petImage = PetImage::create([
+                                    'pet_id' => $pet->id,
+                                    'image_path' => '/uploads/pets/' . $pet->id . '/' . basename($fileName),
+                                    'caption' => $caption
+                                ]);
 
-                if (!empty($_FILES['images']) && is_array($_FILES['images']['name'])) {
-                    $existingFiles = glob($petDir . '*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-                    $startIndex = count($existingFiles) + 1;
+                                if (!$petImage) {
+                                    $errors['images'] = "Failed to save image data for: " . $fileName;
+                                    break; // stop processing if there's an error
+                                }
 
-                    $count = count($_FILES['images']['name']);
-                    for ($i = 0; $i < $count; $i++) {
-                        if ($_FILES['images']['error'][$i] === UPLOAD_ERR_OK) {
-                            $tmpName = $_FILES['images']['tmp_name'][$i];
-                            $ext = strtolower(pathinfo($_FILES['images']['name'][$i], PATHINFO_EXTENSION));
-
-                            if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) continue;
-
-                            $filename = $startIndex++ . '.' . $ext;
-                            $destination = $petDir . $filename;
-
-                            if (move_uploaded_file($tmpName, $destination)) {
-                                $relativePath = "pets/{$pet_id}/" . $filename;
-                                $uploadedImagesNames[] = $relativePath;
+                                header('Location: /pets/' . $pet->id);
+                            } else {
+                                $errors['images'] = "Failed to upload file: " . $_FILES['images']['name'][$index];
+                                break; // stop processing if there's an error
                             }
+                        } else {
+                            $errors['images'] = "Error uploading image: " . $_FILES['images']['error'][$index];
+                            break;
                         }
                     }
+                } else {
+                    $errors['general'] = "Failed to create pet. Please try again.";
                 }
-
-                $db = Database::getConnection();
-                // Save image paths to the database
-                $stmt = $db->prepare("INSERT INTO pet_images (pet_id, image_path) VALUES (?, ?)");
-                foreach ($uploadedImagesNames as $imagePath) {
-                    $stmt->execute([$pet_id, $imagePath]);
-                }
-
-                // TODO: Redirect to the pet's detail page instead of index
-                // header('Location: ' . BASE_URL . '/pets');
-                exit;
-            } else {
-                // http_response_code(500);
-                echo "Error saving pet.";
             }
         }
 
