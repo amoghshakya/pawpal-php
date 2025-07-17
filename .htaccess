@@ -1,15 +1,18 @@
-# Redirect all requests to index.php
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?page=$1 [QSA,L]
 
-# Deny access to .env, config files, and composer files
+# Allow requests for real files or folders (e.g., CSS, JS, uploads)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Redirect all other requests to index.php
+RewriteRule ^ index.php [QSA,L]
+
+# Deny access to sensitive files
 <FilesMatch "^(\.env|composer\.(json|lock)|config\.php|database\.php)$">
     Order Allow,Deny
     Deny from all
 </FilesMatch>
-#
-# Disable directory listing
-Options -Indexes
 
+# Optional: Disable directory listing
+Options -Indexes

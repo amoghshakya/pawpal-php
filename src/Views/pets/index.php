@@ -7,7 +7,7 @@
         <div>
             <?php foreach ($pet->getImages() as $image): ?>
                 <img
-                    src=<?php echo $_ENV['UPLOAD_DIR'] . htmlspecialchars($image) ?>
+                    src="<?= BASE_URL . $image->image_path ?>"
                     width="100"
                     draggable="false" />
             <?php endforeach; ?>

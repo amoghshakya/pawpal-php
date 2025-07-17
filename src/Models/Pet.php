@@ -63,27 +63,32 @@ class Pet extends Model
   public function save()
   {
     $db = Database::getConnection();
+
     if (isset($this->id)) {
       // Update existing pet
       $stmt = $db->prepare(
-        "UPDATE pets SET name = ?, species = ?, breed = ?, age = ?, gender = ?, description = ?, status = ?, location = ? WHERE id = ?"
+        "UPDATE pets 
+             SET name = ?, species = ?, breed = ?, age = ?, gender = ?, description = ?, vaccinated = ?, vaccination_details = ?, status = ?, location = ?
+             WHERE id = ?"
       );
       return $stmt->execute([
         $this->name,
         $this->species,
         $this->breed,
         $this->age,
-        ($gender ?? $this->gender)->name, // Because enums
+        $this->gender->name,
         $this->description,
-        ($status ?? $this->status)->name,
+        $this->vaccinated,
+        $this->vaccination_details,
+        $this->status->name,
         $this->location,
         $this->id
       ]);
     } else {
       // Create new pet 
       $stmt = $db->prepare(
-        "INSERT INTO pets (user_id, name, species, breed, age, gender, description, status, location) "
-          . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO pets (user_id, name, species, breed, age, gender, description, vaccinated, vaccination_details, status, location)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
       );
       $result = $stmt->execute([
         $this->user_id ?? $_SESSION['user_id'],
@@ -93,16 +98,21 @@ class Pet extends Model
         $this->age,
         $this->gender->name,
         $this->description,
+        $this->vaccinated,
+        $this->vaccination_details,
         $this->status->name,
         $this->location
       ]);
+
       if ($result) {
         $this->id = $db->lastInsertId();
         return true;
       }
+
       return false;
     }
   }
+
 
   public static function find(int $id): ?self
   {
@@ -135,7 +145,7 @@ class Pet extends Model
     $stmt->execute([$this->id]);
     $images = [];
     while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
-      $images[] = $data['image_path'];
+      $images[] = new PetImage($data);
     }
     return $images;
   }
@@ -143,5 +153,19 @@ class Pet extends Model
   public function status(): PetStatus
   {
     return $this->status;
+  }
+
+  public function images(): array
+  {
+    return $this->getImages();
+  }
+
+  public function lister(): User
+  {
+    $db = Database::getConnection();
+    $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->execute([$this->user_id]);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    return new User($data);
   }
 }

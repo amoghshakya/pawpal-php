@@ -9,6 +9,7 @@ class PetImage extends Model
     public int $id;
     public int $pet_id;
     public string $image_path;
+    public ?string $caption;
     public string $created_at;
     public string $updated_at;
 
@@ -48,21 +49,23 @@ class PetImage extends Model
         if (isset($this->id)) {
             // Update existing record
             $stmt = $db->prepare(
-                "UPDATE pet_images SET pet_id = ?, image_path = ?, updated_at = NOW() WHERE id = ?"
+                "UPDATE pet_images SET pet_id = ?, image_path = ?, caption = ?, updated_at = NOW() WHERE id = ?"
             );
             return $stmt->execute([
                 $this->pet_id,
                 $this->image_path,
+                $this->caption,
                 $this->id
             ]);
         } else {
             // Insert new record
             $stmt = $db->prepare(
-                "INSERT INTO pet_images (pet_id, image_path, created_at, updated_at) VALUES (?, ?, NOW(), NOW())"
+                "INSERT INTO pet_images (pet_id, image_path, caption, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())"
             );
             $result = $stmt->execute([
                 $this->pet_id,
-                $this->image_path
+                $this->image_path,
+                $this->caption ?? null
             ]);
             if ($result) {
                 $this->id = (int)$db->lastInsertId();

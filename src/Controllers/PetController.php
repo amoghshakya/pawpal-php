@@ -62,7 +62,7 @@ class PetController
         if ($data['vaccinated'] === 'true' && empty($data['vaccination_details'])) {
             $errors['vaccination_details'] = "Vaccination details are required if the pet is vaccinated.";
         } else if ($data['vaccinated'] === 'false') {
-            $data['vaccination_details'] = null; // Clear vaccination details if not vaccinated
+            $data['vaccination_details'] = null; // clear vaccination details if not vaccinated
         }
 
         // also check for files
@@ -102,7 +102,7 @@ class PetController
                     'location' => $_POST['location'],
                     'special_needs' => $_POST['special_needs'] ?? null,
                     'description' => $_POST['description'],
-                    'vaccinated' => $_POST['vaccinated'] === 'true',
+                    'vaccinated' => $_POST['vaccinated'] === 'true' ? 1 : 0, // sql expects tinyint
                     'vaccination_details' => $_POST['vaccination_details'] ?? null,
                 ];
                 $pet = Pet::create($data);
@@ -115,7 +115,7 @@ class PetController
                     }
                     // $_ENV['UPLOAD_DIR'] has the base upload directory
                     $projectRoot = dirname(__DIR__, 2); // go back two directories
-                    $uploadBase = rtrim($projectRoot . '/' . getenv('UPLOAD_DIR'), '/');
+                    $uploadBase = rtrim($projectRoot . '/' . $_ENV['UPLOAD_DIR'], '/');
                     $uploadDir = $uploadBase . '/pets/' . $pet->id . '/';
                     // create the upload directory if it doesn't exist
                     if (!is_dir($uploadDir)) {
@@ -155,8 +155,6 @@ class PetController
                                     $errors['images'] = "Failed to save image data for: " . $fileName;
                                     break; // stop processing if there's an error
                                 }
-
-                                header('Location: /pets/' . $pet->id);
                             } else {
                                 $errors['images'] = "Failed to upload file: " . $_FILES['images']['name'][$index];
                                 break; // stop processing if there's an error
@@ -169,9 +167,22 @@ class PetController
                 } else {
                     $errors['general'] = "Failed to create pet. Please try again.";
                 }
+                header('Location: ' . BASE_URL . "/pets/{$pet->id}");
             }
         }
 
         include __DIR__ . '/../Views/pets/create.php';
+    }
+
+    public function show(int $id)
+    {
+        $pet = Pet::find($id);
+        if (!$pet) {
+            http_response_code(404);
+            include __DIR__ . '/../Views/404.php';
+            return;
+        }
+
+        include __DIR__ . '/../Views/pets/show.php';
     }
 }

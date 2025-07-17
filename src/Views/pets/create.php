@@ -1,10 +1,10 @@
 <?php
 $extraStyles = [
-    '/assets/css/forms.css',
-    '/assets/css/create.css',
+    'forms.css',
+    'create.css',
 ];
 ?>
-<?php include __DIR__ . '/../partials/header.php'; ?>
+<?php include __DIR__ . "/../partials/header.php"; ?>
 
 <section class="form-section">
     <?php if (isset($errors['general'])): ?>
@@ -269,3 +269,5 @@ $extraStyles = [
 
 
 <script src="<?= BASE_URL ?>/assets/js/createPet.js" defer></script>
+
+</body>

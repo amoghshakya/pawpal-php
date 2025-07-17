@@ -1,7 +1,7 @@
 <?php
 $extraStyles = [
-    '/assets/css/forms.css',
-    '/assets/css/register.css',
+    'forms.css',
+    'register.css',
 ];
 ?>
 <?php include __DIR__ . '/../partials/header.php'; ?>

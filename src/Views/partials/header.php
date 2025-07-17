@@ -3,8 +3,8 @@ $title = $title ?? 'PawPal';
 $extraStyles = $extraStyles ?? [];
 ?>
 
-<!doctype html>
-<html lang="en" class="">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
@@ -12,8 +12,9 @@ $extraStyles = $extraStyles ?? [];
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css" />
 
     <?php foreach ($extraStyles as $style): ?>
-        <link rel="stylesheet" href="<?= BASE_URL . $style ?>" />
+        <link rel="stylesheet" href="<?= BASE_URL . '/assets/css/' . ltrim($style, '/') ?>" />
     <?php endforeach; ?>
+
 
     <title><?php echo $title ?></title>
 </head>
