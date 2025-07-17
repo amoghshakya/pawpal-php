@@ -90,7 +90,8 @@ h4 {
     line-height: 1.75rem;
   }
 
-  @media (min-width: 1024px) {}
+  @media (min-width: 1024px) {
+  }
 }
 
 h5 {
@@ -102,7 +103,8 @@ h5 {
     line-height: 1.75rem;
   }
 
-  @media (min-width: 1024px) {}
+  @media (min-width: 1024px) {
+  }
 }
 
 h6 {
@@ -230,6 +232,11 @@ select {
   color: var(--background);
 }
 
+.disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
 button.danger:hover {
   background-color: color-mix(in srgb, var(--text) 20%, var(--danger) 100%);
 }
@@ -334,3 +341,4 @@ a.btn.danger:hover {
     /* for tablets and larger */
   }
 }
+

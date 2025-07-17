@@ -126,10 +126,15 @@ class Pet extends Model
     return null;
   }
 
-  public static function all(): array
+  public static function all(bool $onlyAvailable = true): array
   {
     $db = Database::getConnection();
-    $stmt = $db->prepare("SELECT * FROM pets;");
+    $query = "SELECT * FROM pets";
+
+    if ($onlyAvailable) {
+      $query .= " WHERE status = 'available'";
+    }
+    $stmt = $db->prepare($query);
     $stmt->execute();
     $pets = [];
     while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -167,5 +172,33 @@ class Pet extends Model
     $stmt->execute([$this->user_id]);
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
     return new User($data);
+  }
+
+  public static function paginate(int $page = 1, int $limit = 10, bool $onlyAvailable = true): array
+  {
+    $db = Database::getConnection();
+
+    $offset = ($page - 1) * $limit;
+    $query = "SELECT * FROM pets";
+    $params = [];
+
+    if ($onlyAvailable) {
+      $query .= " WHERE status = ?";
+      $params[] = PetStatus::available->name;
+    }
+
+    $query .= " ORDER BY created_at DESC LIMIT ? OFFSET ?";
+    $params[] = $limit;
+    $params[] = $offset;
+
+    $stmt = $db->prepare($query);
+    $stmt->execute($params);
+
+    $pets = [];
+    while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $pets[] = new self($data);
+    }
+
+    return $pets;
   }
 }

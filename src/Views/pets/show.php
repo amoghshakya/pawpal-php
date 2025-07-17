@@ -211,6 +211,8 @@ $extraStyles = [
 							<a href="<?= BASE_URL . '/pets/' . $pet->id . '/edit' ?>" class="btn secondary">
 								Edit Listing
 							</a>
+						<?php elseif ($pet->status->name === 'adopted'): ?>
+							<button class="disabled">This pet has already been adopted.</button>
 						<?php else: ?>
 							<button class="primary" onclick="contactLister()">
 								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
