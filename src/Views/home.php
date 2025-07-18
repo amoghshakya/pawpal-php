@@ -45,7 +45,9 @@ $pageTitle = "PawPal - Home";
             <?php
             if (isset($_SESSION['user_id'])) {
                 $user = User::find($_SESSION['user_id']);
-                echo htmlspecialchars($user->name);
+                if ($user) {
+                    echo htmlspecialchars($user->name);
+                }
             } else {
                 echo 'Guest';
             }

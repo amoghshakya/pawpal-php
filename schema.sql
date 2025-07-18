@@ -20,6 +20,7 @@ CREATE TABLE users (
   address VARCHAR(255) NOT NULL,
   city VARCHAR(100) NOT NULL,
   state VARCHAR(100) NOT NULL,
+  zip_code VARCHAR(20), -- because Nepal's zip codes are useless
   profile_image VARCHAR(255) DEFAULT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -61,14 +62,29 @@ CREATE TABLE adoption_applications (
   id INT AUTO_INCREMENT PRIMARY KEY,
   pet_id INT NOT NULL,
   user_id INT NOT NULL,
-  message TEXT,
+  address VARCHAR(255),
+  city VARCHAR(100),
+  state VARCHAR(100),
+  zip_code VARCHAR(20),
+  -- Housing information
+  housing_type ENUM ('house', 'apartment', 'condo', 'shared', 'other') NOT NULL,
+  own_or_rent ENUM ('own', 'rent') NOT NULL,
+  landlord_permission ENUM ('yes', 'no', 'pending') DEFAULT NULL,
+  -- Pet experience
   has_other_pets BOOLEAN DEFAULT FALSE,
-  other_pets_details TEXT,
-  living_conditions TEXT,
+  other_pets_details TEXT DEFAULT NULL,
+  experience TEXT NOT NULL,
+  -- Living conditions
+  living_conditions TEXT NOT NULL,
+  hours_alone ENUM ('0-2', '3-4', '5-6', '7-8', '9+') NOT NULL,
+  -- Optional additional message
+  message TEXT,
+  -- Application metadata
   status ENUM ('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
   reviewed_at DATETIME DEFAULT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  -- Foreign keys
   FOREIGN KEY (pet_id) REFERENCES pets (id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );

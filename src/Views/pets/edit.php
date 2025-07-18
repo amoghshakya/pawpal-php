@@ -177,7 +177,7 @@ $images = $pet->images() ?? [];
 
                 <div class="two-column">
                     <div class="form-group">
-                        <label for="special_needs">Special Needs</label>
+                        <label for="special_needs">Special Needs<span class="text-muted small">(optional)</span></label>
                         <input
                             name="special_needs"
                             id="special_needs"
@@ -276,6 +276,9 @@ $images = $pet->images() ?? [];
                             </p>
                         </div>
                     </div>
+                    <span class="text-muted" style="font-size: 0.75rem">
+                        You can upload multiple images. Supported formats: JPG, PNG, GIF. Aspect ratio: 4:3 or 16:9.
+                    </span>
                     <?php if (isset($errors['images'])): ?>
                         <span class="error-message">
                             <?php echo htmlspecialchars($errors['images']); ?>

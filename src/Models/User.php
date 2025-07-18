@@ -15,6 +15,7 @@ class User extends Model
     public string $address;
     public string $city;
     public string $state;
+    public ?string $zip_code;
     public string $role;
     public ?string $created_at;
     public ?string $updated_at;

@@ -102,6 +102,7 @@ class PetController
         return $errors;
     }
 
+    // for creating a new pet, the pets/create route
     public function create()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -190,6 +191,7 @@ class PetController
         include __DIR__ . '/../Views/pets/create.php';
     }
 
+    // for showing a single pet, the pets/{id} route
     public function show(int $id)
     {
         $pet = Pet::find($id);
@@ -202,7 +204,8 @@ class PetController
         include __DIR__ . '/../Views/pets/show.php';
     }
 
-    public function edit(int $id)
+    // for update/edit, the pets/{id}/edit route
+    public function update(int $id)
     {
         $pet = Pet::find($id);
         if (!$pet) {
@@ -267,6 +270,7 @@ class PetController
             if (empty($errors)) {
                 // Update the pet data 
                 $data = [
+                    'id' => $pet->id,
                     'name' => $_POST['name'],
                     'species' => $_POST['species'],
                     'breed' => $_POST['breed'],
@@ -278,6 +282,10 @@ class PetController
                     'vaccinated' => $_POST['vaccinated'] === 'true' ? 1 : 0, // sql expects tinyint
                     'vaccination_details' => $_POST['vaccination_details'] ?? null,
                 ];
+
+                // Update the pet in the database
+                $pet = new Pet($data);
+                $pet->save();
 
                 // Updating captions
                 foreach ($_POST['update_captions'] ?? [] as $key => $caption) {
@@ -334,7 +342,6 @@ class PetController
                 exit;
             }
         }
-
 
         include __DIR__ . '/../Views/pets/edit.php';
     }

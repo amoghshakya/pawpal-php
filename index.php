@@ -15,7 +15,7 @@ define('BASE_URL', rtrim($_ENV['APP_URL'], '/'));
 // Start session when user visits the site
 session_start();
 
-
+use App\Controllers\AdoptionRequestController;
 use App\Controllers\AuthController;
 use App\Controllers\PetController;
 
@@ -73,7 +73,20 @@ switch ($page) {
         if (preg_match('/^\/pets\/(\d+)\/edit$/', $page, $matches)) {
             // If the page matches the pattern /pets/{id}/edit, show the edit pet page
             $id = (int)$matches[1];
-            (new PetController())->edit($id);
+            (new PetController())->update($id);
+            break;
+        }
+
+        if (preg_match('/^\/pets\/(\d+)\/apply$/', $page, $matches)) {
+            // If the page matches the pattern /pets/{id}/apply, show the adopt pet page
+            $id = (int)$matches[1];
+            $controller = new AdoptionRequestController();
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $controller->store($id);
+            } else {
+                $controller->index($id);
+            }
             break;
         }
         http_response_code(404);
