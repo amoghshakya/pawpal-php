@@ -85,4 +85,25 @@ class PetImage extends Model
         }
         return $images;
     }
+
+    public static function updateCaption(int $id, string $caption): bool
+    {
+        $db = Database::getConnection();
+        $self = self::find($id);
+        if (!$self) {
+            return false; // Image not found
+        }
+        $self->caption = $caption;
+        return $self->save();
+    }
+
+    public function delete(): bool
+    {
+        $db = Database::getConnection();
+        if (!isset($this->id)) {
+            return false; // Cannot delete an unsaved image
+        }
+        $stmt = $db->prepare("DELETE FROM pet_images WHERE id = ?");
+        return $stmt->execute([$this->id]);
+    }
 }

@@ -69,6 +69,13 @@ switch ($page) {
             (new PetController())->show($id);
             break;
         }
+
+        if (preg_match('/^\/pets\/(\d+)\/edit$/', $page, $matches)) {
+            // If the page matches the pattern /pets/{id}/edit, show the edit pet page
+            $id = (int)$matches[1];
+            (new PetController())->edit($id);
+            break;
+        }
         http_response_code(404);
         include __DIR__ . '/src/Views/404.php';
         exit;

@@ -24,6 +24,9 @@ class PetController
 
     private function validatePetData(array $data, array $files): array
     {
+        $isEdit = $data['is_edit'] ?? false;
+        $remaining = $data['remaining_images'] ?? 0;
+        $hasNewUploads = $data['has_new_uploads'] ?? false;
         $errors = [];
 
         // Validate required fields
@@ -68,16 +71,27 @@ class PetController
         // also check for files
         // 1. at least one image must be uploaded
         // 2. file mime type must be an image
-        if (empty($files['images']['name'][0])) {
-            $errors['images'] = "At least one image must be uploaded.";
+        if (!$isEdit) {
+            // The flag passed from edit() method indicates if we are editing an existing pet
+            if (empty($files['images']['name'][0])) {
+                $errors['images'] = "At least one image must be uploaded.";
+            }
         } else {
+            // Edit mode
+            if ($remaining <= 0 && !$hasNewUploads) {
+                // If no images are remaining and no new uploads, we need at least one image
+                $errors['images'] = "Please upload at least one image if you remove all existing images. A pet listing requires at least one image.";
+            }
+        }
+
+        // Validate image files
+        if (!empty($files['images']['tmp_name'][0])) {
             foreach ($files['images']['tmp_name'] as $index => $tmpName) {
-                if ($files['images']['error'][$index] !== UPLOAD_ERR_OK) {
-                    continue; // Skip files with upload errors
-                }
+                if ($files['images']['error'][$index] !== UPLOAD_ERR_OK) continue;
+
                 $fileType = mime_content_type($tmpName);
                 if (strpos($fileType, 'image/') !== 0) {
-                    $errors['images'] = "Uploaded files must be images.";
+                    $errors['images'] = "Uploaded files must be valid image files.";
                     break;
                 }
             }
@@ -168,6 +182,7 @@ class PetController
                     $errors['general'] = "Failed to create pet. Please try again.";
                 }
                 header('Location: ' . BASE_URL . "/pets/{$pet->id}");
+                exit;
             }
         }
 
@@ -184,5 +199,132 @@ class PetController
         }
 
         include __DIR__ . '/../Views/pets/show.php';
+    }
+
+    public function edit(int $id)
+    {
+        $pet = Pet::find($id);
+        if (!$pet) {
+            http_response_code(404);
+            include __DIR__ . '/../Views/404.php';
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Editing is very tricky here because we need to handle a lot of things:
+            // 1. Updating the pet data (which is straightforward)
+            // 2. Handling the images:
+            //   - If new images are uploaded, we need to save them (we have already done this)
+            //   - If images are deleted, we need to remove them from the database and filesystem
+            //   - If image captions are updated, we need to update them in the database
+            //   - If no new images are uploaded, we need to keep the existing images (no big deal just dont make any changes)
+            // 3. Validating images:
+            //   - At least one image must be uploaded and must be image mime type
+            //   - We don't have to enforce the "at least one image" rule if the pet already has images
+            //   - If no images are uploaded, we can keep the existing images
+            //   - If the user removes all images, we have to enforce the "at least one image" rule
+            //
+            //   The images and captions are handled in a similar way to the create method.
+            //   The delete images are handled by checking the POST data for delete_photos array
+            //   which contains the image IDs to be deleted.
+            //   The caption updates are handled by checking the POST data for update_captions json
+            //   The update_captions json is in the format:
+            //   { "existing-{image-id}": "new caption" }
+
+            // First, we set a flag to indicate if we are editing/updating the pet 
+            $isEdit = true;
+            // Check existing image count
+            $existingImageCount = count($pet->images());
+            // How many images are being deleted?
+            $toBeDeleted = isset($_POST['delete_photos']) ? json_decode($_POST['delete_photos'] ?? '[]', true) : [];
+            $deleteCount = count($toBeDeleted);
+
+            $remainingAfterDelete = $existingImageCount - $deleteCount;
+            $hasNewUploads = isset($_FILES['images']) && !empty($_FILES['images']['name'][0]);
+
+            // modify the post data to include extra information to pass into the validation function
+            $_POST['is_edit'] = true;
+            $_POST['remaining_images'] = $remainingAfterDelete;
+            $_POST['has_new_uploads'] = $hasNewUploads;
+
+            $errors = $this->validatePetData($_POST, $_FILES);
+            if (empty($errors)) {
+                // Update the pet data 
+                $data = [
+                    'name' => $_POST['name'],
+                    'species' => $_POST['species'],
+                    'breed' => $_POST['breed'],
+                    'age' => $_POST['age'],
+                    'gender' => $_POST['gender'] ?? 'unknown',
+                    'location' => $_POST['location'],
+                    'special_needs' => $_POST['special_needs'] ?? null,
+                    'description' => $_POST['description'],
+                    'vaccinated' => $_POST['vaccinated'] === 'true' ? 1 : 0, // sql expects tinyint
+                    'vaccination_details' => $_POST['vaccination_details'] ?? null,
+                ];
+
+                // Updating captions
+                foreach ($_POST['update_captions'] ?? [] as $key => $caption) {
+                    // The key is in the format "existing-{image-id}"
+                    if (preg_match('/^existing-(\d+)$/', $key, $matches)) {
+                        $imageId = (int)$matches[1];
+                        // Update the caption for the image
+                        PetImage::updateCaption($imageId, $caption);
+                    }
+                }
+
+                // Delete images
+                foreach ($toBeDeleted as $imageId) {
+                    $image = PetImage::find($imageId);
+                    if ($image) {
+                        // Delete the image from the database
+                        $image->delete();
+                        // Remove the image file from the filesystem
+                        $filePath = dirname(__DIR__, 2) . '/' . $image->image_path;
+                        if (file_exists($filePath)) {
+                            unlink($filePath);
+                        }
+                    }
+                }
+
+                // New images uploads and captioning
+                $imageCaptions = json_decode($_POST['captions_json'] ?? '{}', true);
+
+                $projectRoot = dirname(__DIR__, 2);
+                $uploadBase = rtrim($projectRoot . '/' . $_ENV['UPLOAD_DIR'], '/');
+                $uploadDir = $uploadBase . '/pets/' . $pet->id . '/';
+
+                // may not be necessary but ok
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+
+                foreach ($_FILES['images']['tmp_name'] as $index => $tmpName) {
+                    if ($_FILES['images']['error'][$index] === UPLOAD_ERR_OK) {
+                        $fileName = $_FILES['images']['name'][$index];
+                        $fileSize = $_FILES['images']['size'][$index];
+                        $targetPath = $uploadDir . basename($fileName);
+                        $moved = move_uploaded_file($tmpName, $targetPath);
+
+                        if ($moved) {
+                            $key = $fileName . '-' . $fileSize;
+                            $caption = $imageCaptions[$key] ?? null;
+
+                            PetImage::create([
+                                'pet_id' => $pet->id,
+                                'image_path' => '/uploads/pets/' . $pet->id . '/' . basename($fileName),
+                                'caption' => $caption,
+                            ]);
+                        }
+                    }
+                }
+
+                header('Location: ' . BASE_URL . "/pets/{$pet->id}");
+                exit;
+            }
+        }
+
+
+        include __DIR__ . '/../Views/pets/edit.php';
     }
 }
