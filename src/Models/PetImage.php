@@ -104,6 +104,15 @@ class PetImage extends Model
             return false; // Cannot delete an unsaved image
         }
         $stmt = $db->prepare("DELETE FROM pet_images WHERE id = ?");
+
+        // Delete the image file from the filesystem
+        // NOTE: Files are deleted before the database record is deleted
+        $filePath = dirname(__DIR__, 2) . '/' . $this->image_path;
+        if (file_exists($filePath)) {
+            if (!unlink($filePath)) {
+                return false;
+            }
+        }
         return $stmt->execute([$this->id]);
     }
 }

@@ -201,4 +201,25 @@ class Pet extends Model
 
     return $pets;
   }
+
+  public function delete(): bool
+  {
+    $db = Database::getConnection();
+
+    $stmt = $db->prepare("DELETE FROM pets WHERE id = ?");
+    // fetch before deleting because executing delete first will 
+    // delete the pet image records as well
+    $images = $this->getImages();
+    $result = $stmt->execute([$this->id]);
+    if ($result) {
+      // Delete associated images
+      // Database automatically deletes on cascade
+      // so we delete files from filesystem here 
+      foreach ($images as $image) {
+        $image->delete();
+      }
+      return true;
+    }
+    return false;
+  }
 }

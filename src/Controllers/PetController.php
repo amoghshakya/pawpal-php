@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Config\Database;
 use App\Models\Pet;
 use App\Models\PetImage;
+use App\Models\PetStatus;
 
 class PetController
 {
@@ -211,6 +212,21 @@ class PetController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Toggling status
+            if (isset($_POST['action']) && $_POST['action'] === 'toggle_status') {
+                $pet->status = $pet->status === PetStatus::available ? PetStatus::adopted : PetStatus::available;
+                $pet->save();
+                header('Location: ' . BASE_URL . "/pets/{$pet->id}/edit");
+                exit;
+            }
+            // Deleting the pet
+            if (isset($_POST['action']) && $_POST['action'] === 'delete_listing') {
+                // Handle deletion of the pet
+                $pet->delete();
+                header('Location: ' . BASE_URL . '/pets');
+                exit;
+            }
+
             // Editing is very tricky here because we need to handle a lot of things:
             // 1. Updating the pet data (which is straightforward)
             // 2. Handling the images:
@@ -277,13 +293,8 @@ class PetController
                 foreach ($toBeDeleted as $imageId) {
                     $image = PetImage::find($imageId);
                     if ($image) {
-                        // Delete the image from the database
+                        // Delete the image
                         $image->delete();
-                        // Remove the image file from the filesystem
-                        $filePath = dirname(__DIR__, 2) . '/' . $image->image_path;
-                        if (file_exists($filePath)) {
-                            unlink($filePath);
-                        }
                     }
                 }
 

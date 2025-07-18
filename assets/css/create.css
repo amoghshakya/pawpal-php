@@ -34,7 +34,7 @@ form {
 }
 
 #drop-zone-text {
-  color: #6b7280 !important;
+  color: var(--muted);
   font-size: 0.875rem;
   text-align: center;
 }
@@ -161,6 +161,7 @@ input#image {
   background-color: white;
   border-radius: 8px;
   padding: 0.5rem;
+  min-width: 40vw;
   max-width: 80vw;
 }
 
@@ -171,20 +172,28 @@ input#image {
 .modal-body-content {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 1rem 0.5rem;
+}
+
+.modal-footer {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  margin: 0 0.5rem;
+  border-top: 1px solid #ddd;
 }
 
 .modal-image {
   aspect-ratio: 4 / 3;
   max-width: 50vw;
-  margin-bottom: 1rem;
+  margin-bottom: 0.4rem;
   border-radius: 8px;
   object-fit: cover;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .caption-input {
-  margin-bottom: 1rem;
+  margin-bottom: 0.4rem;
 }
 
 .button-container {

@@ -250,17 +250,19 @@ $extraStyles = [
                         type="text"
                         placeholder="Enter caption..." />
 
-                    <!-- Buttons -->
-                    <div class="button-container">
-                        <button
-                            id="caption-cancel-btn"
-                            class="secondary"
-                            type="button">Cancel</button>
-                        <button
-                            id="caption-save-btn"
-                            class="primary"
-                            type="button">Save</button>
-                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Buttons -->
+                <div class="button-container">
+                    <button
+                        id="caption-cancel-btn"
+                        class="secondary"
+                        type="button">Cancel</button>
+                    <button
+                        id="caption-save-btn"
+                        class="primary"
+                        type="button">Save</button>
                 </div>
             </div>
         </div>
