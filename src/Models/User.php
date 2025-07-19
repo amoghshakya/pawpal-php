@@ -92,4 +92,18 @@ class User extends Model
 
         return array_map(fn($user) => new self($user), $users);
     }
+
+    public function pets(bool $availableOnly = false): array
+    {
+        $db = Database::getConnection();
+        $query = "SELECT * FROM pets WHERE user_id = ?";
+        if ($availableOnly) {
+            $query .= " AND status = 'available'";
+        }
+        $stmt = $db->prepare($query);
+        $stmt->execute([$this->id]);
+        $pets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($pet) => new Pet($pet), $pets);
+    }
 }

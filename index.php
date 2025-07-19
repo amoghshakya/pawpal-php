@@ -17,6 +17,7 @@ session_start();
 
 use App\Controllers\AdoptionRequestController;
 use App\Controllers\AuthController;
+use App\Controllers\DashboardController;
 use App\Controllers\PetController;
 
 /**
@@ -62,6 +63,20 @@ switch ($page) {
         // If user is not logged in, redirect to login page
         header('Location: ' . BASE_URL . '/login');
         exit;
+    case '/dashboard':
+        if (isset($_SESSION["user_id"])) {
+            // If user is logged in, show the dashboard
+            (new DashboardController())->index();
+            break;
+        } else {
+            // If user is not logged in, redirect to login page
+            header('Location: ' . BASE_URL . '/login');
+            exit;
+        }
+        break;
+    case '/dashboard/search':
+        (new DashboardController())->search();
+        break;
     default:
         if (preg_match('/^\/pets\/(\d+)$/', $page, $matches)) {
             // If the page matches the pattern /pets/{id}, show the pet page

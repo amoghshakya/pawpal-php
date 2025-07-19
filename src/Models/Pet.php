@@ -36,6 +36,9 @@ class Pet extends Model
   public string $created_at;
   public string $updated_at;
 
+  public ?string $image_url = null; // for convenience, not in DB
+  public ?int $app_count = null; // for convenience, not in DB
+
   public function __construct(array $data = [])
   {
     foreach ($data as $key => $value) {
@@ -44,6 +47,8 @@ class Pet extends Model
           $this->gender = GenderValues::from($value); // or tryFrom()
         } elseif ($key === 'status') {
           $this->status = PetStatus::from($value); // or tryFrom()
+        } elseif ($key === 'vaccinated') {
+          $this->vaccinated = filter_var($value, FILTER_VALIDATE_BOOL);
         } else {
           $this->$key = $value;
         }
@@ -78,7 +83,7 @@ class Pet extends Model
         $this->age,
         $this->gender->name,
         $this->description,
-        $this->vaccinated,
+        (int) $this->vaccinated, // mysql expects tinyint
         $this->vaccination_details,
         $this->status->name,
         $this->location,
@@ -98,7 +103,7 @@ class Pet extends Model
         $this->age,
         $this->gender->name,
         $this->description,
-        $this->vaccinated,
+        (int) $this->vaccinated,
         $this->vaccination_details,
         $this->status->name,
         $this->location
@@ -174,6 +179,18 @@ class Pet extends Model
     return new User($data);
   }
 
+  public function applications(): array
+  {
+    $db = Database::getConnection();
+    $stmt = $db->prepare("SELECT * FROM adoption_applications WHERE pet_id = ?");
+    $stmt->execute([$this->id]);
+    $applications = [];
+    while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $applications[] = new AdoptionRequest($data);
+    }
+    return $applications;
+  }
+
   public static function paginate(int $page = 1, int $limit = 10, bool $onlyAvailable = true): array
   {
     $db = Database::getConnection();
@@ -221,5 +238,68 @@ class Pet extends Model
       return true;
     }
     return false;
+  }
+
+  public static function searchByUser(int $userId, string $search = '', ?string $status = null): array
+  {
+    $db = Database::getConnection();
+    $sql = "SELECT p.*,
+      (SELECT image_path FROM pet_images WHERE pet_id = p.id LIMIT 1) AS image_url,
+      (SELECT COUNT(*) FROM adoption_applications WHERE pet_id = p.id) AS app_count
+      FROM pets p WHERE user_id = :user_id";
+    $params = [
+      'user_id' => $userId,
+    ];
+
+    if (!empty($search)) {
+      // using a single `q` param doesn't work idk
+      $sql .= " AND (name LIKE :q1 OR species LIKE :q2 OR breed LIKE :q3)";
+      $params['q1'] = '%' . $search . '%';
+      $params['q2'] = '%' . $search . '%';
+      $params['q3'] = '%' . $search . '%';
+    }
+
+    if ($status) {
+      $sql .= " AND status = :status";
+      $params['status'] = $status;
+    }
+
+    $sql .= " ORDER BY created_at DESC LIMIT 15";
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute($params);
+
+    $pets = [];
+    while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $pet = new self($data);
+      // we may add additional properties that are from our query:
+      $pet->image_url = $data['image_url'] ?? null;
+      $pet->app_count = (int) ($data['app_count'] ?? 0);
+      $pets[] = $pet->toArray();
+    }
+    return $pets;
+  }
+
+  public function toArray(): array
+  {
+    return [
+      'id' => $this->id,
+      'user_id' => $this->user_id,
+      'name' => $this->name,
+      'species' => $this->species,
+      'breed' => $this->breed,
+      'age' => $this->age,
+      'gender' => $this->gender->value,
+      'description' => $this->description,
+      'vaccinated' => $this->vaccinated,
+      'vaccination_details' => $this->vaccination_details,
+      'status' => $this->status->value,
+      'location' => $this->location,
+      'special_needs' => $this->special_needs,
+      'created_at' => $this->created_at,
+      'updated_at' => $this->updated_at,
+      'image_url' => $this->image_url ?? null,
+      'app_count' => $this->app_count ?? 0,
+    ];
   }
 }

@@ -118,7 +118,7 @@ class PetController
                     'location' => $_POST['location'],
                     'special_needs' => $_POST['special_needs'] ?? null,
                     'description' => $_POST['description'],
-                    'vaccinated' => $_POST['vaccinated'] === 'true' ? 1 : 0, // sql expects tinyint
+                    'vaccinated' => $_POST['vaccinated'] === 'true',
                     'vaccination_details' => $_POST['vaccination_details'] ?? null,
                 ];
                 $pet = Pet::create($data);
@@ -344,5 +344,22 @@ class PetController
         }
 
         include __DIR__ . '/../Views/pets/edit.php';
+    }
+
+    // API for searching pets and stuff
+    // for AJAX requests
+    public function search()
+    {
+        // prevent browser get requests
+        // only allow X_HTTP
+        if (
+            $_SERVER['REQUEST_METHOD'] !== 'GET' ||
+            ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') !== 'XMLHttpRequest'
+        ) {
+            http_response_code(403); // forbidden
+            return;
+        }
+
+        // TODO: implement search logic
     }
 }

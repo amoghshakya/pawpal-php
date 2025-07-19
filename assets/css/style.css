@@ -340,6 +340,10 @@ a.btn.danger:hover {
   display: flex;
 }
 
+.wrap {
+  flex-wrap: wrap;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -410,4 +414,17 @@ a.btn.danger:hover {
 
 .grow {
   flex-grow: 1;
+}
+
+.space-y > * + * {
+  margin-top: 1.5rem;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
