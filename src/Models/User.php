@@ -19,6 +19,7 @@ class User extends Model
     public string $role;
     public ?string $created_at;
     public ?string $updated_at;
+    public ?string $profile_image = null;
 
 
     public function __construct(array $data = [])
@@ -96,7 +97,7 @@ class User extends Model
     public function pets(bool $availableOnly = false): array
     {
         $db = Database::getConnection();
-        $query = "SELECT * FROM pets WHERE user_id = ?";
+        $query = "SELECT * FROM pets WHERE user_id = ? ORDER BY created_at DESC";
         if ($availableOnly) {
             $query .= " AND status = 'available'";
         }
@@ -105,5 +106,33 @@ class User extends Model
         $pets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return array_map(fn($pet) => new Pet($pet), $pets);
+    }
+
+    public function applications(): array
+    {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT * FROM adoption_applications WHERE user_id = ? ORDER BY created_at DESC");
+        $stmt->execute([$this->id]);
+        $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($app) => new AdoptionRequest($app), $applications);
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'address' => $this->address,
+            'city' => $this->city,
+            'state' => $this->state,
+            'zip_code' => $this->zip_code,
+            'role' => $this->role,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'profile_image' => $this->profile_image
+        ];
     }
 }

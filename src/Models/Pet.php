@@ -134,7 +134,7 @@ class Pet extends Model
   public static function all(bool $onlyAvailable = true): array
   {
     $db = Database::getConnection();
-    $query = "SELECT * FROM pets";
+    $query = "SELECT * FROM pets ORDER BY created_at DESC";
 
     if ($onlyAvailable) {
       $query .= " WHERE status = 'available'";
@@ -179,11 +179,20 @@ class Pet extends Model
     return new User($data);
   }
 
-  public function applications(): array
+  public function applications(bool $pendingOnly = false): array
   {
     $db = Database::getConnection();
-    $stmt = $db->prepare("SELECT * FROM adoption_applications WHERE pet_id = ?");
-    $stmt->execute([$this->id]);
+    $sql = "SELECT * FROM adoption_applications WHERE pet_id = ?";
+
+    if ($pendingOnly) {
+      $sql .= " AND status = ?";
+      $stmt = $db->prepare($sql);
+      $stmt->execute([$this->id, 'pending']); // hardcode it idfc
+    } else {
+      $stmt = $db->prepare($sql);
+      $stmt->execute([$this->id]);
+    }
+
     $applications = [];
     while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
       $applications[] = new AdoptionRequest($data);

@@ -74,8 +74,25 @@ switch ($page) {
             exit;
         }
         break;
+    case '/dashboard/applications':
+        // If user is logged in, show the adoption applications
+        if (isset($_SESSION["user_id"])) {
+            (new DashboardController())->applications();
+            break;
+        } else {
+            // If user is not logged in, redirect to login page
+            header('Location: ' . BASE_URL . '/login');
+            exit;
+        }
+        break;
     case '/dashboard/search':
         (new DashboardController())->search();
+        break;
+    case '/dashboard/applications/search':
+        (new DashboardController())->searchApplication();
+        break;
+    case '/dashboard/applications/filter':
+        (new DashboardController())->filterApplications();
         break;
     default:
         if (preg_match('/^\/pets\/(\d+)$/', $page, $matches)) {

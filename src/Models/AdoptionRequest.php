@@ -185,6 +185,16 @@ class AdoptionRequest extends Model
         return null;
     }
 
+    public static function findByPetId(int $petId): array
+    {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT * FROM adoption_applications WHERE pet_id = ?");
+        $stmt->execute([$petId]);
+        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return array_map(fn($item) => new self($item), $data);
+    }
+
     public static function all(): array
     {
         $db = Database::getConnection();
@@ -192,5 +202,42 @@ class AdoptionRequest extends Model
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         return array_map(fn($item) => new self($item), $data);
+    }
+
+    public function pet(): ?Pet
+    {
+        return Pet::find($this->pet_id);
+    }
+
+    public function applicant(): ?User
+    {
+        return User::find($this->user_id);
+    }
+
+    // to array method for easy json serialization
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'pet_id' => $this->pet_id,
+            'user_id' => $this->user_id,
+            'address' => $this->address,
+            'city' => $this->city,
+            'state' => $this->state,
+            'zip_code' => $this->zip_code,
+            'housing_type' => $this->housing_type->name,
+            'own_or_rent' => $this->own_or_rent->name,
+            'landlord_permission' => $this->landlord_permission?->name,
+            'has_other_pets' => $this->has_other_pets,
+            'other_pets_details' => $this->other_pets_details,
+            'experience' => $this->experience,
+            'living_conditions' => $this->living_conditions,
+            'hours_alone' => $this->hours_alone->value,
+            'status' => $this->status->name,
+            'message' => $this->message,
+            'reviewed_at' => $this->reviewed_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
+        ];
     }
 }

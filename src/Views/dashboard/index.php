@@ -12,7 +12,7 @@ $extraStyles = [
 
 <div class="header">
     <div class="container">
-        <h1>Pet Adoption Dashboard</h1>
+        <h1>Dashboard</h1>
         <p>Manage your listings and adoption applications</p>
     </div>
 </div>
@@ -20,8 +20,8 @@ $extraStyles = [
 <div class="container main-content">
     <div class="tabs">
         <div class="tab-list">
-            <button class="tab-button active" onclick="switchTab('listings')">My Listings</button>
-            <button class="tab-button" onclick="switchTab('applications')">Applications</button>
+            <a href="<?= BASE_URL ?>/dashboard" class="unset btn secondary tab-button active">My Listings</a>
+            <a href="<?= BASE_URL ?>/dashboard/applications" class="unset btn secondary tab-button">Applications</a>
         </div>
     </div>
 
@@ -171,6 +171,8 @@ $extraStyles = [
                 listingsGrid.innerHTML = `<p class="text-muted small">No listings found.</p>`;
                 return;
             }
+
+            console.log(pets);
 
             for (const pet of pets) {
                 const card = document.createElement('div');
