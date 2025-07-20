@@ -90,8 +90,7 @@ h4 {
     line-height: 1.75rem;
   }
 
-  @media (min-width: 1024px) {
-  }
+  @media (min-width: 1024px) {}
 }
 
 h5 {
@@ -103,8 +102,7 @@ h5 {
     line-height: 1.75rem;
   }
 
-  @media (min-width: 1024px) {
-  }
+  @media (min-width: 1024px) {}
 }
 
 h6 {
@@ -416,7 +414,7 @@ a.btn.danger:hover {
   flex-grow: 1;
 }
 
-.space-y > * + * {
+.space-y>*+* {
   margin-top: 1.5rem;
 }
 
@@ -452,4 +450,29 @@ a.btn.danger:hover {
 
 .justify-between {
   justify-content: space-between;
+}
+
+.search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 40vw;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.search-bar input {
+  padding: 0.5rem 2rem !important;
+  flex-grow: 1;
+}
+
+.search-icon {
+  position: absolute !important;
+  left: 0.5rem;
+  top: 0.5625rem;
+  color: #9ca3af;
+  pointer-events: none;
 }

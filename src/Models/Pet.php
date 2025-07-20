@@ -7,15 +7,15 @@ use PDO;
 
 enum GenderValues: string
 {
-  case male = 'male';
-  case female = 'female';
-  case unknown = 'unknown';
+  case Male = 'male';
+  case Female = 'female';
+  case Unknown = 'unknown';
 }
 
 enum PetStatus: string
 {
-  case available = 'available';
-  case adopted = 'adopted';
+  case Available = 'available';
+  case Adopted = 'adopted';
 }
 
 class Pet extends Model
@@ -30,7 +30,7 @@ class Pet extends Model
   public string $description;
   public bool $vaccinated = false;
   public ?string $vaccination_details = null;
-  public PetStatus $status = PetStatus::available;
+  public PetStatus $status = PetStatus::Available;
   public string $location;
   public ?string $special_needs = null;
   public string $created_at;
@@ -38,6 +38,7 @@ class Pet extends Model
 
   public ?string $image_url = null; // for convenience, not in DB
   public ?int $app_count = null; // for convenience, not in DB
+  public ?User $lister = null;
 
   public function __construct(array $data = [])
   {
@@ -134,11 +135,12 @@ class Pet extends Model
   public static function all(bool $onlyAvailable = true): array
   {
     $db = Database::getConnection();
-    $query = "SELECT * FROM pets ORDER BY created_at DESC";
+    $query = "SELECT * FROM pets";
 
     if ($onlyAvailable) {
       $query .= " WHERE status = 'available'";
     }
+    $query .= " ORDER BY created_at DESC";
     $stmt = $db->prepare($query);
     $stmt->execute();
     $pets = [];
@@ -210,7 +212,7 @@ class Pet extends Model
 
     if ($onlyAvailable) {
       $query .= " WHERE status = ?";
-      $params[] = PetStatus::available->name;
+      $params[] = PetStatus::Available->name;
     }
 
     $query .= " ORDER BY created_at DESC LIMIT ? OFFSET ?";
@@ -298,11 +300,11 @@ class Pet extends Model
       'species' => $this->species,
       'breed' => $this->breed,
       'age' => $this->age,
-      'gender' => $this->gender->value,
+      'gender' => $this->gender->name,
       'description' => $this->description,
       'vaccinated' => $this->vaccinated,
       'vaccination_details' => $this->vaccination_details,
-      'status' => $this->status->value,
+      'status' => $this->status->name,
       'location' => $this->location,
       'special_needs' => $this->special_needs,
       'created_at' => $this->created_at,

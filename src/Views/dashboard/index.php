@@ -66,8 +66,8 @@ $extraStyles = [
                         <img
                             src="<?= BASE_URL . $pet->images()[0]->image_path ?>"
                             alt="<?= htmlspecialchars($pet->name) ?>" class="card-image" />
-                        <span class="status-badge listing-status-badge badge-<?= $pet->status->name ?>">
-                            <?= htmlspecialchars(ucwords($pet->status->name)) ?>
+                        <span class="status-badge listing-status-badge badge-<?= $pet->status->value ?>">
+                            <?= htmlspecialchars($pet->status->name) ?>
                         </span>
                     </div>
                     <div class="card-header">
@@ -107,7 +107,7 @@ $extraStyles = [
                                     <?= date_format(new DateTime($pet->created_at), 'M d, Y') ?>
                                 </span>
                             </div>
-                            <?php if ($pet->status === PetStatus::adopted): ?>
+                            <?php if ($pet->status === PetStatus::Adopted): ?>
                                 <div class="info-row">
                                     <span>Adopted:</span>
                                     <span><?= htmlspecialchars(
@@ -180,7 +180,7 @@ $extraStyles = [
                 card.innerHTML = `
                     <div class="card-image-container">
                         <img src="<?= BASE_URL ?>${pet.image_url}" alt="${pet.name}" class="card-image" />
-                        <span class="status-badge listing-status-badge badge-${pet.status}">
+                        <span class="status-badge listing-status-badge badge-${pet.status[0].toLowerCase() + pet.status.slice(1)}">
                             ${pet.status.charAt(0).toUpperCase() + pet.status.slice(1)}
                         </span>
                     </div>

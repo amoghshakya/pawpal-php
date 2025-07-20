@@ -34,16 +34,15 @@
 .search-bar {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: space-between;
+  gap: 1.5rem;
   margin-bottom: 1.5rem;
+  width: 100%;
 }
 
-.search-input {
-  flex: 1;
+.search-bar input {
+  width: 80%;
 }
-
-/* .search-icon { */
-/* } */
 
 .search-button:hover {
   background: #5a6fd8;

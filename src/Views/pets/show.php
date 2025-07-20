@@ -67,7 +67,7 @@ $extraStyles = [
 						</div>
 					</div>
 
-					<div class="status-badge"><?= htmlspecialchars(ucwords($pet->status->name)) ?></div>
+					<div class="status-badge"><?= htmlspecialchars($pet->status->name) ?></div>
 				</div>
 
 				<div class="card-content">
@@ -91,7 +91,7 @@ $extraStyles = [
 							</svg>
 							<p class="info-card-title">Gender</p>
 							<p class="info-card-value">
-								<?= htmlspecialchars(ucwords($pet->gender->name)) ?>
+								<?= htmlspecialchars($pet->gender->name) ?>
 							</p>
 						</div>
 						<div class="info-card">

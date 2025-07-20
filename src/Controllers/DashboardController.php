@@ -85,7 +85,7 @@ class DashboardController
 
         // filter pets with applications and not adopted
         $pets = array_filter($pets, function ($pet) {
-            return count($pet->applications(true)) > 0 && $pet->status !== PetStatus::adopted;
+            return count($pet->applications(true)) > 0 && $pet->status !== PetStatus::Adopted;
         });
 
         // applications view
@@ -153,7 +153,7 @@ class DashboardController
 
         // filter pets with applications
         $pets = array_filter($pets, function ($pet) {
-            return count($pet->applications()) > 0 && $pet->status !== PetStatus::adopted;
+            return count($pet->applications()) > 0 && $pet->status !== PetStatus::Adopted;
         });
 
         // return in format

@@ -53,6 +53,13 @@ switch ($page) {
         (new AuthController())->logout();
         break;
     case '/pets':
+        if (
+            $_SERVER['REQUEST_METHOD'] === 'GET' &&
+            ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest'
+        ) {
+            (new PetController())->search();
+            exit; // Exit after handling AJAX request
+        }
         (new PetController())->index();
         break;
     case '/pets/create':

@@ -217,7 +217,7 @@ class PetController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Toggling status
             if (isset($_POST['action']) && $_POST['action'] === 'toggle_status') {
-                $pet->status = $pet->status === PetStatus::available ? PetStatus::adopted : PetStatus::available;
+                $pet->status = $pet->status === PetStatus::Available ? PetStatus::Adopted : PetStatus::Available;
                 $pet->save();
                 header('Location: ' . BASE_URL . "/pets/{$pet->id}/edit");
                 exit;
@@ -350,16 +350,58 @@ class PetController
     // for AJAX requests
     public function search()
     {
-        // prevent browser get requests
-        // only allow X_HTTP
+        // Allow only AJAX GET requests
         if (
             $_SERVER['REQUEST_METHOD'] !== 'GET' ||
             ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') !== 'XMLHttpRequest'
         ) {
-            http_response_code(403); // forbidden
+            http_response_code(403); // Forbidden
             return;
         }
 
-        // TODO: implement search logic
+        $search = $_GET['search'] ?? '';   // search term - name, species, or breed
+        $gender = $_GET['gender'] ?? '';
+        $vaccinated = $_GET['vaccinated'] ?? '';
+        $status = $_GET['status'] ?? PetStatus::Available->value;
+
+        $sql = "SELECT * FROM pets WHERE status = :status";
+        $params = ['status' => $status];
+
+        if (!empty($search)) {
+            $sql .= " AND (name LIKE :q1 OR species LIKE :q2 OR breed LIKE :q3)";
+            // using a single `q` param doesn't work idk
+            $params['q1'] = '%' . $search . '%';
+            $params['q2'] = '%' . $search . '%';
+            $params['q3'] = '%' . $search . '%';
+        }
+
+        if (!empty($gender)) {
+            $sql .= " AND gender = :gender";
+            $params['gender'] = $gender;
+        }
+
+        if ($vaccinated === 'yes') {
+            $sql .= " AND vaccinated = 1";
+        } elseif ($vaccinated === 'no') {
+            $sql .= " AND vaccinated = 0";
+        }
+
+        $sql .= " ORDER BY created_at DESC";
+
+        $stmt = Database::getConnection()->prepare($sql);
+        $stmt->execute($params);
+
+        $pets = [];
+        while ($data = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $pet = new Pet($data);
+            // we may add additional properties that are from our query:
+            $pet->image_url = $pet->images()[0]->image_path ?? null;
+            $pet_json = $pet->toArray();
+            $pet_json['lister'] = $pet->lister()->toArray();
+            $pets[] = $pet_json;
+        }
+
+        // return as array
+        echo json_encode(array_values($pets));
     }
 }

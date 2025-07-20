@@ -182,17 +182,15 @@ $extraStyles = [
         const container = document.getElementById('applicationsContainer');
         container.innerHTML = '';
 
-        if (!data || data.length === 0) {
-            container.innerHTML = '<p class="text-muted">No applications found.</p>';
-            return;
-        }
-
         // Clear the container before rendering new data
         container.innerHTML = '';
 
         for (const item of data) {
             totalApplicationCount.textContent = item.applications.length + ' Total Applications';
-            if (!item.applications.length) continue; // skip if no applications for a pet
+            if (!item.applications.length) {
+                container.innerHTML = '<p class="text-muted">No applications found.</p>';
+                continue;
+            }
             container.innerHTML += `
                 <div class="applications-by-pet">
                     <div class="pet-section-header">

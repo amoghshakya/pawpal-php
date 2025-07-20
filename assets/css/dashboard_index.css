@@ -69,31 +69,6 @@
   }
 }
 
-.search-bar {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 40vw;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-}
-
-.search-bar input {
-  padding: 0.5rem 2rem !important;
-  flex-grow: 1;
-}
-
-.search-icon {
-  position: absolute;
-  left: 0.5rem;
-  top: 0.5625rem;
-  color: #9ca3af;
-  pointer-events: none;
-}
-
 .search-bar input:focus-visible+.search-icon {
   transition: color 0.2s ease-in-out;
   color: var(--primary);
