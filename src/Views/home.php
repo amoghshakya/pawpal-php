@@ -1,62 +1,29 @@
 <?php
-// Home Page stuff
-use App\Models\User;
-
-$pageTitle = "PawPal - Home";
+$title = "PawPal - Home";
+$extraStyles = [
+    'home.css',
+];
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<?php include 'src/Views/partials/header.php'; ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $pageTitle; ?></title>
-    <link rel="stylesheet" href="assets/css/style.css" />
-</head>
-
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li>
-                    <a href=<?php echo BASE_URL . '/' ?>>
-                        Home
-                    </a>
-                </li>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <li>
-                        <a href=<?php echo BASE_URL . '/logout' ?>>
-                            Logout
-                        </a>
-                    </li>
-                <?php else: ?>
-                    <li>
-                        <a href=<?php echo BASE_URL . '/login' ?>>Login</a>
-
-                    </li>
-                    <li>
-                        <a href=<?php echo BASE_URL . '/register' ?>>Register</a>
-                    </li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-        <h1>Hello,
-            <?php
-            if (isset($_SESSION['user_id'])) {
-                $user = User::find($_SESSION['user_id']);
-                if ($user) {
-                    echo htmlspecialchars($user->name);
-                }
-            } else {
-                echo 'Guest';
-            }
-            ?>
-        </h1>
-    </header>
-    <main>
-        <img src="<?= $_ENV['UPLOAD_DIR'] . 'dog.jpeg'; ?>" width='150px' />
-    </main>
-</body>
-
-</html>
+<header>
+    <?php include 'src/Views/partials/navbar.php'; ?>
+</header>
+<main>
+    <section class="container">
+        <div class="hero">
+            <h1>
+                Find your perfect pet companion with PawPal!
+            </h1>
+            <img
+                src="<?= BASE_URL ?>/public/gang.png"
+                alt="A group of happy dogs"
+                draggable="false"
+                class="hero-image" />
+            <div class="cta">
+                <!-- ok -->
+            </div>
+        </div>
+    </section>
+</main>

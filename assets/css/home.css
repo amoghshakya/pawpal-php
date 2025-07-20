@@ -1,0 +1,28 @@
+.hero {
+    text-align: center;
+    margin: 20px auto;
+    padding: 1rem 0;
+}
+
+.hero h1 {
+    margin: 20px 0;
+}
+
+.hero .hero-image {
+    user-select: none;
+    max-width: 100%;
+    height: auto;
+    margin-top: -2.5rem;
+
+    @media (max-width: 768px) {
+        margin-top: -1.875rem;
+    }
+}
+
+.cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+}

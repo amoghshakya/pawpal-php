@@ -19,6 +19,7 @@ use App\Controllers\AdoptionRequestController;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\PetController;
+use App\Utils\Auth;
 
 /**
  * Routing logic
@@ -63,7 +64,7 @@ switch ($page) {
         (new PetController())->index();
         break;
     case '/pets/create':
-        if (isset($_SESSION["user_id"])) {
+        if (Auth::isAuthenticated()) {
             (new PetController())->create();
             break;
         }
@@ -71,7 +72,7 @@ switch ($page) {
         header('Location: ' . BASE_URL . '/login');
         exit;
     case '/dashboard':
-        if (isset($_SESSION["user_id"])) {
+        if (Auth::isAuthenticated()) {
             // If user is logged in, show the dashboard
             (new DashboardController())->index();
             break;
@@ -83,7 +84,7 @@ switch ($page) {
         break;
     case '/dashboard/applications':
         // If user is logged in, show the adoption applications
-        if (isset($_SESSION["user_id"])) {
+        if (Auth::isAuthenticated()) {
             (new DashboardController())->applications();
             break;
         } else {

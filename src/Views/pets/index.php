@@ -6,23 +6,28 @@ $extraStyles = [
 ?>
 <?php include __DIR__ . '/../partials/header.php'; ?>
 
+<?php include __DIR__ . '/../partials/navbar.php'; ?>
+
 <main class="main-content">
+    <!-- <div class="container">
+        <h2 class="main-title">Browse Pets</h2>
+        <p class="text-muted">Find your new furry friend!</p>
+    </div> -->
     <div class="container">
         <!-- Search and Filter Section -->
         <section class="search-section">
             <div class="search-bar">
-                <!-- TODO: Implement search functionality -->
-                <input
-                    type="search"
-                    class="search-input"
-                    placeholder="Search by name, species, or breed"
-                    id="searchInput" />
                 <div class="search-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
                 </div>
-                <div class="grow">
+                <input
+                    type="search"
+                    class="search-input"
+                    placeholder="Search by name, species, or breed"
+                    id="searchInput" />
+                <div class="inline">
                     <button class="primary" id="searchButton">Search</button>
                 </div>
             </div>

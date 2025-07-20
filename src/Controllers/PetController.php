@@ -7,6 +7,8 @@ use App\Models\Favorite;
 use App\Models\Pet;
 use App\Models\PetImage;
 use App\Models\PetStatus;
+use App\Utils\Auth;
+use Dom\Attr;
 
 class PetController
 {
@@ -214,7 +216,7 @@ class PetController
         ) {
             header('Content-Type: application/json');
             // really shouldn't happen unless someone is trying to mess with the API
-            if (!isset($_SESSION['user_id'])) {
+            if (!Auth::isAuthenticated()) {
                 http_response_code(403);
                 exit;
             }

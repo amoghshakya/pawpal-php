@@ -11,19 +11,13 @@ $extraStyles = [
 ?>
 <?php include __DIR__ . '/../partials/header.php'; ?>
 
-
-<div class="header">
-    <div class="container">
-        <h1>Dashboard</h1>
-        <p>Manage your listings and adoption applications</p>
-    </div>
-</div>
+<?php include __DIR__ . '/../partials/dashboard_header.php'; ?>
 
 <div class="container main-content">
     <div class="tabs">
         <div class="tab-list">
-            <a href="<?= BASE_URL ?>/dashboard" class="unset btn secondary tab-button">My Listings</a>
-            <a href="<?= BASE_URL ?>/dashboard/applications" class="unset btn secondary tab-button active">Applications</a>
+            <a href="<?= BASE_URL ?>/dashboard" class="btn secondary tab-button">My Listings</a>
+            <a href="<?= BASE_URL ?>/dashboard/applications" class="btn secondary tab-button active">Applications</a>
         </div>
     </div>
 

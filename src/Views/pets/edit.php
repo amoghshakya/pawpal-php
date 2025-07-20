@@ -5,8 +5,13 @@ $extraStyles = [
 ];
 
 $images = $pet->images() ?? [];
+
+$headerTitle = "Edit {$pet->name}'s Listing";
+$headerDescription = "Update the details of your pet's listing. Ensure all information is accurate and up-to-date before saving.";
 ?>
 <?php include __DIR__ . "/../partials/header.php"; ?>
+
+<?php include __DIR__ . "/../partials/dashboard_header.php"; ?>
 
 <main>
     <div class="banner <?= $pet->status->name === 'available' ? 'success' : 'warning' ?>">
@@ -64,8 +69,7 @@ $images = $pet->images() ?? [];
             </div>
         </div>
     </div>
-    <section class="form-section">
-        <h2 class="form-title">Edit <?= htmlspecialchars($pet->name) ?>'s Listing</h2>
+    <section class="form-section container">
         <?php if (isset($errors['general'])): ?>
             <span class="error-message">
                 <?php echo htmlspecialchars($errors['general']); ?>

@@ -7,16 +7,17 @@ use App\Models\ApplicationStatus;
 use App\Models\Pet;
 use App\Models\PetStatus;
 use App\Models\User;
+use App\Utils\Auth;
 
 class DashboardController
 {
     public function index()
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!Auth::isAuthenticated()) {
             header('Location: /login');
             exit;
         }
-        $user = User::find($_SESSION['user_id']);
+        $user = Auth::user();
         $listings = $user->pets();
 
         // dashboard view
@@ -26,7 +27,7 @@ class DashboardController
     // we search pets here
     public function search()
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!Auth::isAuthenticated()) {
             header('Location: /login');
             exit;
         }
@@ -54,7 +55,7 @@ class DashboardController
 
     public function applications()
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!Auth::isAuthenticated()) {
             header('Location: /login');
             exit;
         }
@@ -80,7 +81,7 @@ class DashboardController
             }
         }
 
-        $user = User::find($_SESSION['user_id']);
+        $user = Auth::user();
         $pets = $user->pets();
 
         // filter pets with applications and not adopted
@@ -94,7 +95,7 @@ class DashboardController
 
     public function searchApplication()
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!Auth::isAuthenticated()) {
             header('Location: /login');
             exit;
         }
@@ -132,7 +133,7 @@ class DashboardController
 
     public function filterApplications()
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!Auth::isAuthenticated()) {
             header('Location: /login');
             exit;
         }

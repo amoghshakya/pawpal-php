@@ -10,6 +10,7 @@ $extraStyles = [
 ?>
 
 <?php include __DIR__ . "/../partials/header.php"; ?>
+<?php include __DIR__ . "/../partials/navbar.php"; ?>
 
 <div class="container">
     <div class="form-card">

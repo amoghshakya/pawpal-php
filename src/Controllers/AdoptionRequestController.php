@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\AdoptionRequest;
 use App\Models\Pet;
+use App\Utils\Auth;
 
 class AdoptionRequestController
 {
@@ -14,11 +15,11 @@ class AdoptionRequestController
         $this->applicationModel = new AdoptionRequest();
     }
 
+    // for /pets/{id}/apply
     public function index(int $id)
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!Auth::isAuthenticated()) {
             http_response_code(403);
-            echo "You must be logged in to view adoption applications.";
             return;
         }
 
@@ -26,6 +27,11 @@ class AdoptionRequestController
         if (!$pet) {
             http_response_code(404);
             include __DIR__ . '/../Views/404.php';
+            return;
+        }
+
+        if ($pet->lister()->id === $_SESSION['user_id']) {
+            http_response_code(403);
             return;
         }
 
@@ -105,7 +111,7 @@ class AdoptionRequestController
 
     public function store(int $petId)
     {
-        if (!isset($_SESSION['user_id'])) {
+        if (!Auth::isAuthenticated()) {
             http_response_code(403);
             echo "You must be logged in to submit an adoption application.";
             return;

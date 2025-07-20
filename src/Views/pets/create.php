@@ -3,10 +3,15 @@ $extraStyles = [
     'forms.css',
     'create.css',
 ];
+
+$headerTitle = "Create Pet";
+$headerDescription = "Add a new pet to the shelter database. Fill out the form below to provide details about the pet, including its name, species, breed";
 ?>
 <?php include __DIR__ . "/../partials/header.php"; ?>
 
-<section class="form-section">
+<?php include __DIR__ . "/../partials/dashboard_header.php"; ?>
+
+<section class="form-section container">
     <?php if (isset($errors['general'])): ?>
         <span class="error-message">
             <?php echo htmlspecialchars($errors['general']); ?>

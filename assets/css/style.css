@@ -293,6 +293,7 @@ a:hover {
 }
 
 a.btn {
+  padding: 0.75rem 1rem;
   border-radius: 0.375rem;
 }
 
@@ -475,4 +476,19 @@ a.btn.danger:hover {
   top: 0.5625rem;
   color: #9ca3af;
   pointer-events: none;
+}
+
+.inline {
+  display: inline;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.justify-center {
+  justify-content: center;
 }

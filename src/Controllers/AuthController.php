@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Utils\Auth;
 
 class AuthController
 {
@@ -73,7 +74,7 @@ class AuthController
     public function register()
     {
         // If user is already logged in, redirect to home page
-        if (isset($_SESSION['user_id'])) {
+        if (Auth::isAuthenticated()) {
             header('Location: ' . BASE_URL . '/');
             exit;
         }
@@ -132,10 +133,11 @@ class AuthController
 
     public function login()
     {
-        if (isset($_SESSION['user_id'])) {
+        if (Auth::isAuthenticated()) {
             header('Location: ' . BASE_URL . '/');
             exit;
         }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = $this->validateLoginData($_POST);
             if (empty($errors)) {
