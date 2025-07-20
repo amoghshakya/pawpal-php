@@ -40,13 +40,15 @@ A simple PHP + MySQL web application built using XAMPP.
     ```
 
 2. Install Dependencies:
-    - Ensure you have [Composer](https://getcomposer.org/) installed.
+    - Ensure you have [Composer](https://getcomposer.org/) installed and run
+      
     ```bash
     composer install
     ```
 
 3. Set up `.env` file:
     - Copy `.env.example` to `.env` and update the database connection settings and `APP_URL` if needed.
+      
     ```bash
     cp .env.example .env
     ```
