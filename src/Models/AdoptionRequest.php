@@ -190,18 +190,22 @@ class AdoptionRequest extends Model
         $db = Database::getConnection();
         $stmt = $db->prepare("SELECT * FROM adoption_applications WHERE pet_id = ?");
         $stmt->execute([$petId]);
-        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        return array_map(fn($item) => new self($item), $data);
+        $applications = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $applications[] = new self($row);
+        }
+        return $applications;
     }
 
     public static function all(): array
     {
         $db = Database::getConnection();
         $stmt = $db->query("SELECT * FROM adoption_applications");
-        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        return array_map(fn($item) => new self($item), $data);
+        $applications = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $applications[] = new self($row);
+        }
+        return $applications;
     }
 
     public function pet(): ?Pet

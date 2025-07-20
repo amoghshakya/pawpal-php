@@ -89,9 +89,12 @@ class User extends Model
     {
         $db = Database::getConnection();
         $stmt = $db->query("SELECT * FROM users");
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return array_map(fn($user) => new self($user), $users);
+        $users = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $users[] = new self($row);
+        }
+        return $users;
     }
 
     public function pets(bool $availableOnly = false): array
@@ -103,9 +106,12 @@ class User extends Model
         }
         $stmt = $db->prepare($query);
         $stmt->execute([$this->id]);
-        $pets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pets = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pets[] = new Pet($row);
+        }
 
-        return array_map(fn($pet) => new Pet($pet), $pets);
+        return $pets;
     }
 
     public function applications(): array
@@ -113,9 +119,11 @@ class User extends Model
         $db = Database::getConnection();
         $stmt = $db->prepare("SELECT * FROM adoption_applications WHERE user_id = ? ORDER BY created_at DESC");
         $stmt->execute([$this->id]);
-        $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return array_map(fn($app) => new AdoptionRequest($app), $applications);
+        $applications = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $applications[] = new AdoptionRequest($row);
+        }
+        return $applications;
     }
 
     public function favorites(): array
@@ -123,9 +131,14 @@ class User extends Model
         $db = Database::getConnection();
         $stmt = $db->prepare("SELECT * FROM favorites WHERE user_id = ? ORDER BY created_at DESC");
         $stmt->execute([$this->id]);
-        $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return array_map(fn($fav) => new Favorite($fav), $favorites);
+        $favorites = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pet = Pet::find($row['pet_id']);
+            if ($pet) {
+                $favorites[] = $pet;
+            }
+        }
+        return $favorites;
     }
 
     public function toArray(): array
