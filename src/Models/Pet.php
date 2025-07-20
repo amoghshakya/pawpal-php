@@ -202,6 +202,18 @@ class Pet extends Model
     return $applications;
   }
 
+  public function favorites(): array
+  {
+    $db = Database::getConnection();
+    $stmt = $db->prepare("SELECT * FROM favorites WHERE pet_id = ? ORDER BY created_at DESC");
+    $stmt->execute([$this->id]);
+    $favorites = [];
+    while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $favorites[] = new Favorite($data);
+    }
+    return $favorites;
+  }
+
   public static function paginate(int $page = 1, int $limit = 10, bool $onlyAvailable = true): array
   {
     $db = Database::getConnection();

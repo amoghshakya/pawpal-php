@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Favorite;
+use App\Models\User;
 use App\Utils\Utils;
 
 $title = "PawPal - $pet->name";
@@ -151,7 +153,7 @@ $extraStyles = [
 					<h2 class="card-title">Medical Information</h2>
 				</div>
 				<div class="card-content">
-					<div class="medical-sect ion">
+					<div class="medical-section">
 						<div class="medical-header">
 							<svg class="icon text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
@@ -182,6 +184,19 @@ $extraStyles = [
 			<div class="card">
 				<div class="card-header">
 					<h2 class="card-title">Listed by</h2>
+					<?php
+					$user = isset($_SESSION['user_id']) ? User::find($_SESSION['user_id']) : null;
+					$isUserFavorite = $user && Favorite::findByUnique($user->id, $pet->id);
+					?>
+					<?php if ($user && $pet->lister()->id !== $user->id): ?>
+						<button
+							class="unset <?= $isUserFavorite ? 'active' : '' ?>"
+							id="favorite">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" class="size-6">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"></path>
+							</svg>
+						</button>
+					<?php endif; ?>
 				</div>
 				<div class="card-content">
 					<div class="lister-info">
@@ -223,13 +238,12 @@ $extraStyles = [
 						<?php elseif ($pet->status->name === 'adopted'): ?>
 							<button class="disabled">This pet has already been adopted.</button>
 						<?php else: ?>
-							<button class="primary" onclick="contactLister()">
+							<a href="tel:<?= $pet->lister()->phone ?>" class="btn primary" onclick="">
 								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
 								</svg>
-
 								Contact About <?= htmlspecialchars($pet->name) ?>
-							</button>
+							</a>
 							<a class="btn secondary" href="<?= BASE_URL . '/pets/' . $pet->id . '/apply' ?>">
 								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
@@ -293,6 +307,35 @@ $extraStyles = [
 </div>
 
 <script>
+	const favoriteButton = document.getElementById('favorite');
+
+	favoriteButton.addEventListener('click', async function() {
+		const petId = <?= $pet->id ?>;
+
+		try {
+			const response = await fetch(`<?= BASE_URL ?>/pets/${petId}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Requested-With': 'XMLHttpRequest'
+				},
+				body: JSON.stringify({
+					pet_id: petId
+				})
+			});
+
+			const result = await response.json();
+			if (response.ok) {
+				favoriteButton.classList.toggle('active');
+			}
+		} catch (error) {
+			console.error('Error saving pet:', error);
+			return;
+		}
+	})
+</script>
+
+<script defer>
 	let currentSlide = 0;
 	const totalSlides = <?= count($pet->images()) ?>;
 

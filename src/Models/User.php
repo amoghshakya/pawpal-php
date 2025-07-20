@@ -118,6 +118,16 @@ class User extends Model
         return array_map(fn($app) => new AdoptionRequest($app), $applications);
     }
 
+    public function favorites(): array
+    {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT * FROM favorites WHERE user_id = ? ORDER BY created_at DESC");
+        $stmt->execute([$this->id]);
+        $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($fav) => new Favorite($fav), $favorites);
+    }
+
     public function toArray(): array
     {
         return [

@@ -105,7 +105,20 @@ switch ($page) {
         if (preg_match('/^\/pets\/(\d+)$/', $page, $matches)) {
             // If the page matches the pattern /pets/{id}, show the pet page
             $id = (int)$matches[1];
-            (new PetController())->show($id);
+            $controller = new PetController();
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = json_decode(file_get_contents('php://input'), true);
+                if (!$input || !isset($input['pet_id'])) {
+                    http_response_code(400);
+                    echo json_encode(['status' => 'error', 'message' => 'Pet ID is required.']);
+                    exit;
+                }
+                $controller->favorite();
+                exit;
+            } else {
+                // If it's a GET request, show the pet details
+                $controller->show($id);
+            }
             break;
         }
 

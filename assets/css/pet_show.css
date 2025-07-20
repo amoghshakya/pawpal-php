@@ -47,6 +47,9 @@
 
 .card-header {
   padding: 1.5rem 1.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .card-content {
@@ -372,4 +375,15 @@
   .pet-info-grid {
     grid-template-columns: 1fr;
   }
+}
+
+button#favorite:hover svg {
+  cursor: pointer;
+  fill: #e74c3c;
+  color: #e74c3c;
+}
+
+button#favorite.active svg {
+  color: #c0392b;
+  fill: #c0392b;
 }

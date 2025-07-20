@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Config\Database;
+use App\Models\Favorite;
 use App\Models\Pet;
 use App\Models\PetImage;
 use App\Models\PetStatus;
@@ -202,6 +203,52 @@ class PetController
         }
 
         include __DIR__ . '/../Views/pets/show.php';
+    }
+
+    // also ajax for favorite/unfavorite
+    public function favorite()
+    {
+        if (
+            $_SERVER['REQUEST_METHOD'] === 'POST' &&
+            ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest'
+        ) {
+            header('Content-Type: application/json');
+            // really shouldn't happen unless someone is trying to mess with the API
+            if (!isset($_SESSION['user_id'])) {
+                http_response_code(403);
+                exit;
+            }
+            // because application/json
+            $input = json_decode(file_get_contents('php://input'), true);
+            $petId = $input['pet_id'] ?? null;
+            if (!$petId) {
+                echo json_encode(['status' => 'error', 'message' => 'Pet ID is required.']);
+                exit;
+            }
+
+            // Handle favorite/unfavorite action
+            $userId = $_SESSION['user_id'];
+            $favorite = Favorite::findByUnique($userId, $petId);
+            if ($favorite) {
+                if ($favorite->delete()) {
+                    echo json_encode(['status' => 'success', 'message' => 'Pet removed from favorites.']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Failed to remove pet from favorites.']);
+                }
+            } else {
+                $favorite = Favorite::create(['user_id' => $userId, 'pet_id' => $petId]);
+                if ($favorite) {
+                    echo json_encode(['status' => 'success', 'message' => 'Pet added to favorites.']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Failed to add pet to favorites.']);
+                }
+            }
+            exit;
+        }
+        // optional fallback
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
+        exit;
     }
 
     // for update/edit, the pets/{id}/edit route
