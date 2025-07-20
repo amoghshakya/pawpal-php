@@ -46,7 +46,7 @@ A simple PHP + MySQL web application built using XAMPP.
     ```
 
 3. Set up `.env` file:
-    - Copy `.env.example` to `.env` and update the database connection settings.
+    - Copy `.env.example` to `.env` and update the database connection settings and `APP_URL` if needed.
     ```bash
     cp .env.example .env
     ```
@@ -56,12 +56,17 @@ A simple PHP + MySQL web application built using XAMPP.
     DB_NAME=pawpal
     DB_USER=root
     DB_PASS=
+
+    # change this if your folder name is different
+    APP_URL=http://localhost/pawpal-php
     ```
 
 4. Create the database:
     - Open [phpMyAdmin](http://localhost/phpmyadmin)
     - Create a database named `pawpal`
     - Import `schema.sql` 
+
+    > Note that the table names are hardcoded in the codebase
 
 5. Run the project:
     - Open your browser and navigate to `http://localhost/pawpal`.
