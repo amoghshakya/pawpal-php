@@ -56,6 +56,10 @@
   padding: 1.5rem;
 }
 
+.card-content p#descriptionParagraph {
+  line-break: anywhere;
+}
+
 .card-title {
   font-size: 1.125rem;
   font-weight: 600;

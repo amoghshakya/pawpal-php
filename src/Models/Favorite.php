@@ -105,4 +105,48 @@ class Favorite extends Model
         $stmt = $db->prepare("DELETE FROM favorites WHERE id = ?");
         return $stmt->execute([$this->id]);
     }
+
+    public static function petsFavoritedBy(int $userId): array
+    {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT p.* FROM favorites f JOIN pets p ON f.pet_id = p.id WHERE f.user_id = ?");
+        $stmt->execute([$userId]);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $pets = [];
+        foreach ($rows as $row) {
+            $pets[] = new Pet($row);
+        }
+        return $pets;
+    }
+
+    public function pet(): ?Pet
+    {
+        if (!$this->pet_id) {
+            return null;
+        }
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT * FROM pets WHERE id = ?");
+        $stmt->execute([$this->pet_id]);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($data) {
+            return new Pet($data);
+        }
+        return null;
+    }
+
+    public function user(): ?User
+    {
+        if (!$this->user_id) {
+            return null;
+        }
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->execute([$this->user_id]);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($data) {
+            return new User($data);
+        }
+        return null;
+    }
 }

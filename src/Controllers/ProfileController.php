@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\User;
 use App\Models\AdoptionRequest;
 use App\Config\Database;
+use App\Models\Favorite;
 use App\Utils\Auth;
 use PDO;
 
@@ -52,9 +53,14 @@ class ProfileController
             exit;
         }
 
+        $favoritedPets = $user->favorites();
 
-        // Get user's adoption history (applications they made)
-        $adoptionHistory = $this->getAdoptionHistory($user->id);
+        if ($user->role === 'lister') {
+            $listings = $user->pets(true);
+        } else {
+            $adoptionHistory = $this->getAdoptionHistory($user->id);
+        }
+
 
         $title = "PawPal - $user->name's Profile";
         include __DIR__ . '/../Views/dashboard/profile.php';
@@ -76,10 +82,14 @@ class ProfileController
             header('Location: ' . BASE_URL . '/login');
             exit;
         }
+        $favoritedPets = $user->favorites();
         $authUser = $user; // dumb workaround for reusing the same view
 
-        // Get user's adoption history (applications they made)
-        $adoptionHistory = $this->getAdoptionHistory($user->id);
+        if ($user->role === 'lister') {
+            $listings = $user->pets(true);
+        } else {
+            $adoptionHistory = $this->getAdoptionHistory($user->id);
+        }
 
         $title = "PawPal - My Profile";
         require_once __DIR__ . '/../Views/dashboard/profile.php';

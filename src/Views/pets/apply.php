@@ -217,8 +217,10 @@ $extraStyles = [
                 <div class="form-section">
                     <h3 class="section-title">Pet Experience</h3>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="hasOtherPets" name="hasOtherPets"
-                            <?= isset($_POST['hasOtherPets']) && $_POST['hasOtherPets'] ? 'checked' : '' ?> />
+                        <!-- Always send value even when unchecked -->
+                        <input type="hidden" name="hasOtherPets" value="0">
+                        <input type="checkbox" id="hasOtherPets" name="hasOtherPets" value="1"
+                            <?= isset($_POST['hasOtherPets']) && $_POST['hasOtherPets'] == '1' ? 'checked' : '' ?> />
                         <label for="hasOtherPets" class="checkbox-label">I currently have other pets</label>
                     </div>
                     <div id="otherPetsSection" class="form-group" style="<?= (isset($_POST['hasOtherPets']) && $_POST['hasOtherPets']) ? 'display: flex;' : 'display: none;' ?>">

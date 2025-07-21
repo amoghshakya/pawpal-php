@@ -13,11 +13,17 @@ class DashboardController
 {
     public function index()
     {
-        if (!Auth::isAuthenticated()) {
+        $user = Auth::user();
+        if (!$user) {
             header('Location: /login');
             exit;
         }
-        $user = Auth::user();
+
+        if ($user->role !== 'lister') {
+            http_response_code(403); // forbidden
+            return;
+        }
+
         $listings = $user->pets();
 
         // dashboard view
@@ -55,9 +61,10 @@ class DashboardController
 
     public function applications()
     {
-        if (!Auth::isAuthenticated()) {
-            header('Location: /login');
-            exit;
+        $user = Auth::user();
+        if ($user->role !== 'lister') {
+            http_response_code(403); // forbidden
+            return;
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -81,7 +88,6 @@ class DashboardController
             }
         }
 
-        $user = Auth::user();
         $pets = $user->pets();
 
         // filter pets with applications and not adopted

@@ -2,6 +2,7 @@
 
 use App\Models\Favorite;
 use App\Models\User;
+use App\Utils\Auth;
 use App\Utils\Utils;
 
 $title = "PawPal - $pet->name";
@@ -114,7 +115,7 @@ $extraStyles = [
 					<h2 class="card-title">About <?= htmlspecialchars($pet->name) ?></h2>
 				</div>
 				<div class="card-content">
-					<p>
+					<p id="descriptionParagraph">
 						<?= nl2br(htmlspecialchars($pet->description)) ?>
 					</p>
 				</div>
@@ -122,7 +123,7 @@ $extraStyles = [
 
 			<!-- Special Needs -->
 			<?php if ($pet->special_needs): ?>
-				<div class="card">
+				<div class=" card">
 					<div class="card-header">
 						<h2 class="card-title">Special Needs</h2>
 					</div>
@@ -172,7 +173,7 @@ $extraStyles = [
 				<div class="card-header">
 					<h2 class="card-title">Listed by</h2>
 					<?php
-					$user = isset($_SESSION['user_id']) ? User::find($_SESSION['user_id']) : null;
+					$user = Auth::isAuthenticated() ? Auth::user() : null;
 					$isUserFavorite = $user && Favorite::findByUnique($user->id, $pet->id);
 					?>
 					<?php if ($user && $pet->lister()->id !== $user->id): ?>
@@ -190,7 +191,7 @@ $extraStyles = [
 						<div class="avatar">
 							<?php if ($pet->lister()->profile_image): ?>
 								<img
-									src="<?= BASE_URL . $pet->lister()->profile_image ?>"
+									src="<?= BASE_URL . '/' . $pet->lister()->profile_image ?>"
 									alt="<?= htmlspecialchars($pet->lister()->name) ?>'s profile picture" />
 							<?php else: ?>
 								<?= Utils::initials($pet->lister()->name) ?>
@@ -211,7 +212,7 @@ $extraStyles = [
 						</div>
 					</div>
 					<div style="display: flex; flex-direction: column; gap: 0.5rem;">
-						<?php if (!isset($_SESSION['user_id'])): ?>
+						<?php if (!Auth::isAuthenticated()): ?>
 							<a href="<?= BASE_URL ?>/login" class="btn secondary">
 								Log in to contact lister
 							</a>
@@ -222,8 +223,10 @@ $extraStyles = [
 								</svg>
 								Edit Listing
 							</a>
+						<?php elseif (Auth::user()->role === 'lister'): ?>
+
 						<?php elseif ($pet->status->name === 'adopted'): ?>
-							<button class="disabled">This pet has already been adopted.</button>
+							<button class="disabled" disabled>This pet has already been adopted.</button>
 						<?php else: ?>
 							<a href="tel:<?= $pet->lister()->phone ?>" class="btn primary" onclick="">
 								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
@@ -231,13 +234,22 @@ $extraStyles = [
 								</svg>
 								Contact About <?= htmlspecialchars($pet->name) ?>
 							</a>
-							<a class="btn secondary" href="<?= BASE_URL . '/pets/' . $pet->id . '/apply' ?>">
-								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-								</svg>
-
-								Apply for Adoption
-							</a>
+							<?php $self = Auth::user(); ?>
+							<?php if ($self->hasApplied($pet->id)): ?>
+								<button class="disabled" disabled>
+									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+									</svg>
+									You have already applied for this pet
+								</button>
+							<?php else: ?>
+								<a class="btn secondary" href="<?= BASE_URL . '/pets/' . $pet->id . '/apply' ?>">
+									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+									</svg>
+									Apply for Adoption
+								</a>
+							<?php endif; ?>
 						<?php endif; ?>
 					</div>
 				</div>

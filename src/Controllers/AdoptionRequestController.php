@@ -35,6 +35,11 @@ class AdoptionRequestController
             return;
         }
 
+        if (Auth::user()->hasApplied($pet->id)) {
+            http_response_code(403);
+            return;
+        }
+
         include __DIR__ . '/../Views/pets/apply.php';
     }
 
@@ -111,6 +116,9 @@ class AdoptionRequestController
 
     public function store(int $petId)
     {
+        echo '<pre>';
+        var_dump($_POST);
+        echo '</pre>';
         if (!Auth::isAuthenticated()) {
             http_response_code(403);
             echo "You must be logged in to submit an adoption application.";

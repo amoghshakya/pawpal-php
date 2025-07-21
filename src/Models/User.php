@@ -98,15 +98,30 @@ class User extends Model
         return $users;
     }
 
+    /**
+     * Get all pets listed by this user.
+     * 
+     * @param bool $availableOnly If true, only return pets that are available for adoption.
+     * @return Pet[] Array of Pet objects.
+     * 
+     * The method name is kind of misleading because it says pets but we return the pet listings.
+     * This method is specific to the user of lister type.
+     */
     public function pets(bool $availableOnly = false): array
     {
         $db = Database::getConnection();
-        $query = "SELECT * FROM pets WHERE user_id = ? ORDER BY created_at DESC";
+        $query = "SELECT * FROM pets WHERE user_id = ?";
+        $params = [$this->id];
+
         if ($availableOnly) {
-            $query .= " AND status = 'available'";
+            $query .= " AND status = ?";
+            $params[] = 'available';
         }
+
+        $query .= " ORDER BY created_at DESC";
         $stmt = $db->prepare($query);
-        $stmt->execute([$this->id]);
+        $stmt->execute($params);
+
         $pets = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $pets[] = new Pet($row);
@@ -115,6 +130,14 @@ class User extends Model
         return $pets;
     }
 
+    /**
+     * Get all adoption applications made by this user.
+     * 
+     * @return AdoptionRequest[] Array of AdoptionRequest objects.
+     * 
+     * this method is specific to the user of adopter type. but 
+     * any user can call it so okay whatever
+     */
     public function applications(): array
     {
         $db = Database::getConnection();
@@ -145,11 +168,11 @@ class User extends Model
     public function update(array $data): bool
     {
         $db = Database::getConnection();
-        
+
         // Build the SET clause dynamically based on provided data
         $setClause = [];
         $params = [];
-        
+
         foreach ($data as $key => $value) {
             if (property_exists($this, $key) && $key !== 'id') {
                 $setClause[] = "$key = ?";
@@ -158,13 +181,13 @@ class User extends Model
                 $this->$key = $value;
             }
         }
-        
+
         // Add the ID for the WHERE clause
         $params[] = $this->id;
-        
+
         $sql = "UPDATE users SET " . implode(', ', $setClause) . ", updated_at = NOW() WHERE id = ?";
         $stmt = $db->prepare($sql);
-        
+
         return $stmt->execute($params);
     }
 
@@ -185,5 +208,16 @@ class User extends Model
             'updated_at' => $this->updated_at,
             'profile_image' => $this->profile_image
         ];
+    }
+
+    public function hasApplied(int $petId): bool
+    {
+        $db = Database::getConnection();
+        // to be fair, there shouldn't be more than one application per user per pet
+        // so we can just check if any exists
+        $stmt = $db->prepare("SELECT COUNT(*) FROM adoption_applications WHERE user_id = ? AND pet_id = ?");
+        $stmt->execute([$this->id, $petId]);
+        $count = $stmt->fetchColumn();
+        return $count > 0;
     }
 }

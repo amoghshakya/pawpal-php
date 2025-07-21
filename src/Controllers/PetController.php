@@ -108,6 +108,11 @@ class PetController
     // for creating a new pet, the pets/create route
     public function create()
     {
+        $auth = Auth::user();
+        if ($auth->role !== 'lister') {
+            http_response_code(403); // Forbidden
+            return;
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = $this->validatePetData($_POST, $_FILES);
 

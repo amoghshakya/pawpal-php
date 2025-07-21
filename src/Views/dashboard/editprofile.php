@@ -1,4 +1,7 @@
 <?php
+
+use App\Utils\Utils;
+
 $extraStyles = [
     'forms.css',
     'profile_edit.css',
@@ -45,7 +48,7 @@ $extraStyles = [
                     <?php else: ?>
                         <div class="profile-avatar-placeholder" id="avatarPreview">
                             <span class="profile-avatar-initials">
-                                <?= strtoupper(substr($user->name, 0, 2)) ?>
+                                <?= Utils::initials($user->name) ?>
                             </span>
                         </div>
                     <?php endif; ?>
