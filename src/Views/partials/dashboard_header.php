@@ -47,14 +47,5 @@ $headerDescription = $headerDescription ?? "Welcome to your dashboard. Here you 
             <p><?= $headerDescription ?></p>
         </div>
     </div>
-    <div class="avatar">
-        <?php if (Auth::isAuthenticated()): ?>
-            <?php $user = Auth::user(); ?>
-            <?php if ($user->profile_image): ?>
-                <img src="<?= BASE_URL . $user->profile_image ?>" alt="<?= $user->name ?>'s Avatar" class="avatar-image" />
-            <?php else: ?>
-                <?= Utils::initials(Auth::user()->name) ?>
-            <?php endif; ?>
-        <?php endif; ?>
-    </div>
+    <?php include 'src/Views/partials/avatar.php'; ?>
 </div>

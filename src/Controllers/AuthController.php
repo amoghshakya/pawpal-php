@@ -165,7 +165,7 @@ class AuthController
                 exit;
             }
             session_destroy();
-            header('Location: ' . BASE_URL . '/login');
+            header('Location: ' . BASE_URL . '/');
             exit;
         }
     }
