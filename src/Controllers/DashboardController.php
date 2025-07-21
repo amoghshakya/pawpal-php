@@ -17,8 +17,8 @@ class DashboardController
             exit;
         }
         $user = User::find($_SESSION['user_id']);
-        $listings = $user->pets();
-
+        // $listings = $user->pets();
+        $listings = [];
         // dashboard view
         include __DIR__ . '/../Views/dashboard/index.php';
     }

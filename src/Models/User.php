@@ -16,6 +16,7 @@ class User extends Model
     public string $city;
     public string $state;
     public ?string $zip_code;
+    public ?string $bio;
     public string $role;
     public ?string $created_at;
     public ?string $updated_at;
@@ -118,6 +119,32 @@ class User extends Model
         return array_map(fn($app) => new AdoptionRequest($app), $applications);
     }
 
+    public function update(array $data): bool
+    {
+        $db = Database::getConnection();
+        
+        // Build the SET clause dynamically based on provided data
+        $setClause = [];
+        $params = [];
+        
+        foreach ($data as $key => $value) {
+            if (property_exists($this, $key) && $key !== 'id') {
+                $setClause[] = "$key = ?";
+                $params[] = $value;
+                // Update the object property too
+                $this->$key = $value;
+            }
+        }
+        
+        // Add the ID for the WHERE clause
+        $params[] = $this->id;
+        
+        $sql = "UPDATE users SET " . implode(', ', $setClause) . ", updated_at = NOW() WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        
+        return $stmt->execute($params);
+    }
+
     public function toArray(): array
     {
         return [
@@ -129,6 +156,7 @@ class User extends Model
             'city' => $this->city,
             'state' => $this->state,
             'zip_code' => $this->zip_code,
+            'bio' => $this->bio,
             'role' => $this->role,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

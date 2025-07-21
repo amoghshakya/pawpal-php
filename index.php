@@ -19,7 +19,7 @@ use App\Controllers\AdoptionRequestController;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\PetController;
-
+use App\Controllers\ProfileController;
 /**
  * Routing logic
  *
@@ -100,6 +100,26 @@ switch ($page) {
         break;
     case '/dashboard/applications/filter':
         (new DashboardController())->filterApplications();
+        break;
+    case '/profile':
+        if (isset($_SESSION['user_id'])) {
+            //If user is logged in, show the profile page
+            (new ProfileController())->handleRequest();
+        } else {
+            // If user is not logged in, redirect to login page
+            header('Location: ' . BASE_URL . '/login');
+            exit;
+        }
+        break;
+    case '/profile/edit':
+        if (isset($_SESSION['user_id'])) {
+            //If user is logged in, show the edit profile page
+            (new ProfileController())->edit();
+        } else {
+            // If user is not logged in, redirect to login page
+            header('Location: ' . BASE_URL . '/login');
+            exit;
+        }
         break;
     default:
         if (preg_match('/^\/pets\/(\d+)$/', $page, $matches)) {
