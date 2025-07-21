@@ -70,6 +70,13 @@ use App\Utils\Utils;
         height: 50px;
         cursor: pointer;
     }
+
+    #avatar-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
 </style>
 
 <nav class="navbar">
@@ -112,11 +119,15 @@ use App\Utils\Utils;
         <?php if (Auth::isAuthenticated()): ?>
             <div class="avatar">
                 <?php if (Auth::isAuthenticated()): ?>
-                    <?php $user = Auth::user(); ?>
-                    <?php if ($user->profile_image): ?>
-                        <img src="<?= BASE_URL . $user->profile_image ?>" alt="<?= $user->name ?>'s Avatar" class="avatar-image" />
+                    <?php $navUser = Auth::user(); ?>
+                    <?php if ($navUser->profile_image): ?>
+                        <a href="<?= BASE_URL ?>/profile" class="">
+                            <img src="<?= BASE_URL . '/' . $navUser->profile_image ?>" alt="<?= $navUser->name ?>'s Avatar" id="avatar-image" />
+                        </a>
                     <?php else: ?>
-                        <?= Utils::initials(Auth::user()->name) ?>
+                        <a href="<?= BASE_URL ?>/profile" class="">
+                            <?= Utils::initials($navUser->name) ?>
+                        </a>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>

@@ -7,11 +7,9 @@ use App\Utils\Auth;
 
 class AuthController
 {
-    private User $userModel;
-
     public function __construct()
     {
-        $this->userModel = new User();
+        // Constructor can be empty since we use static methods
     }
 
     private function validateRegistrationData(array $data): array
@@ -30,7 +28,7 @@ class AuthController
             $errors['email'] = 'Email is required.';
         } else if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Invalid email format.';
-        } else if ($this->userModel->findByEmail($data['email'])) {
+        } else if (User::findByEmail($data['email'])) {
             $errors['email'] = 'Email is already registered.';
         }
 
@@ -73,6 +71,11 @@ class AuthController
 
     public function register()
     {
+        // Start session only if one isn't already active
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         // If user is already logged in, redirect to home page
         if (Auth::isAuthenticated()) {
             header('Location: ' . BASE_URL . '/');
@@ -119,8 +122,6 @@ class AuthController
             $errors['email'] = 'Email is required.';
         } else if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Invalid email format.';
-        } else if (User::findByEmail($data['email']) === null) {
-            $errors['email'] = 'Email is not registered.';
         }
 
         // Validate password (required)
@@ -141,7 +142,7 @@ class AuthController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = $this->validateLoginData($_POST);
             if (empty($errors)) {
-                $user = $this->userModel->findByEmail($_POST['email']);
+                $user = User::findByEmail($_POST['email']);
                 if ($user && password_verify($_POST['password'], $user->password)) {
                     $_SESSION['user_id'] = $user->id;
                     $_SESSION['name'] = $user->name;

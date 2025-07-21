@@ -21,7 +21,8 @@ CREATE TABLE users (
   city VARCHAR(100) NOT NULL,
   state VARCHAR(100) NOT NULL,
   zip_code VARCHAR(20), -- because Nepal's zip codes are useless
-  profile_image VARCHAR(255) DEFAULT NULL,
+  bio TEXT NULL, -- user's personal bio - tell us about yourself, what pets you love, etc.
+  profile_image VARCHAR(255) DEFAULT NULL, -- path to uploaded profile picture
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
