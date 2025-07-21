@@ -1,11 +1,11 @@
 @import "fonts.css";
 
 :root {
-  --text: #050315;
+  --text: #1A1919;
   --background: #fbfbfe;
-  --primary: #2f27ce;
-  --secondary: #dedcff;
-  --accent: #433bff;
+  --primary: #0099FF;
+  --secondary: #DEDCFF;
+  --accent: #FF5722;
   --danger: #ef4444;
   --muted: #6b7280;
 }
@@ -240,7 +240,7 @@ select {
 
 .secondary {
   background-color: var(--secondary);
-  color: var(--text);
+  color: var(--text) !important;
 }
 
 .danger {
@@ -302,7 +302,6 @@ a.btn:hover {
 }
 
 a.btn.secondary:hover {
-  color: var(--text);
   background-color: color-mix(in srgb, var(--text) 20%, var(--secondary) 100%);
 }
 
@@ -491,4 +490,12 @@ a.btn.danger:hover {
 
 .justify-center {
   justify-content: center;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.text-center {
+  text-align: center;
 }

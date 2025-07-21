@@ -1,18 +1,50 @@
+p {
+    font-size: 1rem;
+}
+
+.gradient-container {
+    background: linear-gradient(to right, #6F4A9E, #0099FF);
+}
+
 .hero {
-    text-align: center;
-    margin: 20px auto;
-    padding: 1rem 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 2rem 1rem;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        text-align: center;
+        place-items: center;
+    }
 }
 
 .hero h1 {
     margin: 20px 0;
+
+    @media (min-width: 768px) {
+        font-size: 3.5rem;
+        line-height: 1.2;
+    }
+}
+
+.hero-text {
+    color: var(--background);
+}
+
+.hero-text p {
+    color: var(--background);
+
+}
+
+.hero-text * {
+    margin: 1.5rem 0;
 }
 
 .hero .hero-image {
     user-select: none;
     max-width: 100%;
     height: auto;
-    margin-top: -2.5rem;
+    place-self: center;
 
     @media (max-width: 768px) {
         margin-top: -1.875rem;
@@ -20,9 +52,90 @@
 }
 
 .cta {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    width: fit-content;
+
+    @media (max-width: 768px) {
+        margin: 0 auto;
+    }
+}
+
+.cta a {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    color: var(--text);
+    background: var(--background);
+}
+
+.cta a:hover {
+    color: var(--primary);
+}
+
+
+.cta svg {
+    margin: 0;
+    transition: transform 0.2s ease-in-out 0.1s;
+}
+
+.cta a:hover svg {
+    transform: translateX(0.25rem);
+}
+
+.discover-grid {
+    padding: 1.5rem 0;
+    gap: 1.5rem;
+    place-items: center;
+}
+
+.discover-image {
+    padding: 1rem 0;
+}
+
+.discover-image img {
+    border-radius: 0.875rem;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    box-shadow: 0 12px 12px rgba(0, 0, 0, 0.2);
+}
+
+.discover-text {
     gap: 1rem;
+}
+
+.discover-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.discover h2,
+.discover h3 {
+    color: var(--primary);
+}
+
+.discover>div:nth-child(1) {
+    padding: 1.5rem 0;
+}
+
+.discover>div:nth-child(1) * {
+    margin: 0.5rem 0;
+}
+
+.join {
+    padding: 2rem 1rem;
+    color: var(--background);
+}
+
+.join p {
+    width: 50%;
+    color: var(--background);
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
+}
+
+.join * {
+    margin: 0.5rem 0;
 }

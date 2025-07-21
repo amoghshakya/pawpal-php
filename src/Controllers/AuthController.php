@@ -158,8 +158,14 @@ class AuthController
 
     public function logout()
     {
-        session_destroy();
-        header('Location: ' . BASE_URL . '/login');
-        exit;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Auth::isAuthenticated()) {
+                header('Location: ' . BASE_URL . '/login');
+                exit;
+            }
+            session_destroy();
+            header('Location: ' . BASE_URL . '/login');
+            exit;
+        }
     }
 }

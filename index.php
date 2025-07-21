@@ -39,8 +39,10 @@ $page = str_replace($scriptDir, '', $requestUri);
 switch ($page) {
     case '/':
         // Home page logic can be added here if needed
-        $pageTitle = "Welcome to the Home Page";
         include __DIR__ . '/src/Views/home.php';
+        break;
+    case '/about':
+        include __DIR__ . '/src/Views/about.php';
         break;
     case '/login':
         (new AuthController())->login();

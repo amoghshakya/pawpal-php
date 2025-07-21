@@ -364,25 +364,6 @@ $extraStyles = [
 		updateCarousel();
 	}
 
-	function toggleSave() {
-		const saveText = document.getElementById('save-text');
-		if (saveText.textContent === 'Save Pet') {
-			saveText.textContent = 'Saved!';
-			alert('Pet saved to your favorites!');
-		} else {
-			saveText.textContent = 'Save Pet';
-			alert('Pet removed from favorites.');
-		}
-	}
-
-	function contactLister() {
-		alert('Contacting Sarah Johnson about Luna...\n\nIn a real application, this would open a contact form or initiate a phone call.');
-	}
-
-	function sendMessage() {
-		alert('Opening message composer...\n\nIn a real application, this would open a messaging interface.');
-	}
-
 	// Auto-advance carousel every 5 seconds
 	setInterval(nextSlide, 5000);
 
