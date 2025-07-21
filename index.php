@@ -22,6 +22,7 @@ use App\Controllers\PetController;
 use App\Utils\Auth;
 
 use App\Controllers\ProfileController;
+
 /**
  * Routing logic
  *
@@ -116,7 +117,7 @@ switch ($page) {
         }
         break;
     case '/profile/edit':
-        if (isset($_SESSION['user_id'])) {
+        if (Auth::isAuthenticated()) {
             //If user is logged in, show the edit profile page
             (new ProfileController())->edit();
         } else {
@@ -165,6 +166,15 @@ switch ($page) {
             }
             break;
         }
+
+        if (preg_match('/^\/profile\/(\d+)$/', $page, $matches)) {
+            // If the page matches the pattern /profile/{id}, show the user's profile
+            $userId = (int)$matches[1];
+            (new ProfileController())->show($userId);
+            break;
+        }
+
+
         http_response_code(404);
         include __DIR__ . '/src/Views/404.php';
         exit;

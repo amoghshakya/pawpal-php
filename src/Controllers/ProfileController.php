@@ -5,60 +5,95 @@ namespace App\Controllers;
 use App\Models\User;
 use App\Models\AdoptionRequest;
 use App\Config\Database;
+use App\Utils\Auth;
 use PDO;
 
 class ProfileController
 {
     private PDO $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         // Get the database connection using the Database singleton
         $this->db = Database::getConnection();
     }
 
-    public function handleRequest() {
-        // Start session only if one isn't already active
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+    public function show(int $id)
+    {
+        // if user is not logged in, redirect to login
+        if (!Auth::isAuthenticated()) {
+            header('Location: ' . BASE_URL . '/login');
+            exit;
         }
 
+        $authUser = Auth::user();
+
+        // if user is trying to view their own profile, redirect to /profile
+        if ($authUser->id === $id) {
+            header('Location: ' . BASE_URL . '/profile');
+            exit;
+        }
+
+
+        // initial idea is to let anybody view any profile
+        // but could stress the database if too many requests
+        // Fetch user data
+        $authUser = Auth::user();
+
+        if (!$authUser) {
+            // User not found, redirect to login
+            header('Location: ' . BASE_URL . '/login');
+            exit;
+        }
+
+        $user = User::find($id);
+        if (!$user) {
+            http_response_code(404);
+            exit;
+        }
+
+
+        // Get user's adoption history (applications they made)
+        $adoptionHistory = $this->getAdoptionHistory($user->id);
+
+        $title = "PawPal - $user->name's Profile";
+        include __DIR__ . '/../Views/dashboard/profile.php';
+    }
+
+    public function handleRequest()
+    {
         // Redirect if user is not logged in
-        if (!isset($_SESSION['user_id'])) {
+        if (!Auth::isAuthenticated()) {
             header('Location: ' . BASE_URL . '/login');
             exit;
         }
 
         // Fetch user data
-        $user = User::find($_SESSION['user_id']);
-        
+        $user = Auth::user();
+
         if (!$user) {
             // User not found, clear session and redirect to login
-            session_destroy();
             header('Location: ' . BASE_URL . '/login');
             exit;
         }
+        $authUser = $user; // dumb workaround for reusing the same view
 
         // Get user's adoption history (applications they made)
         $adoptionHistory = $this->getAdoptionHistory($user->id);
 
-        $pageTitle = "PawPal - My Profile";
+        $title = "PawPal - My Profile";
         require_once __DIR__ . '/../Views/dashboard/profile.php';
     }
 
-    public function edit() {
-        // Start session only if one isn't already active
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['user_id'])) {
+    public function edit()
+    {
+        if (!Auth::isAuthenticated()) {
             header('Location: ' . BASE_URL . '/login');
             exit;
         }
 
-        $user = User::find($_SESSION['user_id']);
+        $user = Auth::user();
         if (!$user) {
-            session_destroy();
             header('Location: ' . BASE_URL . '/login');
             exit;
         }
@@ -69,11 +104,11 @@ class ProfileController
         // Handle form submission
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors = $this->validateProfileData($_POST);
-            
+
             if (empty($errors)) {
                 // Handle profile image upload
                 $profileImagePath = $user->profile_image; // Keep existing if no new upload
-                
+
                 if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
                     $uploadResult = $this->handleImageUpload($_FILES['profile_image']);
                     if ($uploadResult['success']) {
@@ -158,34 +193,40 @@ class ProfileController
     {
         $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
         $maxSize = 5 * 1024 * 1024; // 5MB max file size
-        
+
         // Check file type
         if (!in_array($file['type'], $allowedTypes)) {
             return ['success' => false, 'error' => 'Only JPEG, PNG, and GIF images are allowed!'];
         }
-        
+
         // Check file size
         if ($file['size'] > $maxSize) {
             return ['success' => false, 'error' => 'Image too big! Max size is 5MB.'];
         }
-        
+
         // Create upload directory if it doesn't exist
-        $uploadDir = 'uploads/profiles/';
+        // $_ENV['UPLOAD_DIR'] has the base upload directory
+        $projectRoot = dirname(__DIR__, 2); // go back two directories
+        $uploadBase = rtrim($projectRoot . '/' . $_ENV['UPLOAD_DIR'], '/');
+        $uploadDir = $uploadBase . '/profiles/' . Auth::user()->id . '/'; // because only logged in users can update pfps
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
-        
+
         // Generate unique filename
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = uniqid('profile_') . '.' . $extension;
         $filepath = $uploadDir . $filename;
-        
+
+        $relativePath = $_ENV['UPLOAD_DIR'] . 'profiles/' . Auth::user()->id . '/' . $filename;
+
         // Move uploaded file
         if (move_uploaded_file($file['tmp_name'], $filepath)) {
-            return ['success' => true, 'path' => $filepath];
+            return ['success' => true, 'path' => $relativePath];
         } else {
             return ['success' => false, 'error' => 'Failed to upload image. Try again!'];
         }
+        exit;
     }
 
     private function getAdoptionHistory(int $userId): array
@@ -204,10 +245,10 @@ class ProfileController
             WHERE aa.user_id = ?
             ORDER BY aa.created_at DESC
         ";
-        
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId]);
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

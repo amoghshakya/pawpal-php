@@ -18,4 +18,13 @@ class Auth
     {
         return isset($_SESSION['user_id']);
     }
+
+    public static function role(): ?string
+    {
+        if (self::isAuthenticated()) {
+            $user = self::user();
+            return $user->role ?? null;
+        }
+        return null;
+    }
 }
