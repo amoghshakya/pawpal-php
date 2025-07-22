@@ -165,7 +165,7 @@ $extraStyles = [
         resultsInfo.innerHTML = `<span class="results-text">Showing ${pets.length} available pets</span>`;
         for (const pet of pets) {
             petContainer.innerHTML += `
-                <a href="<?= BASE_URL . '/pets/' ?>/${pet.id}" style="all: unset;">
+                <a href="<?= BASE_URL . '/pets' ?>/${pet.id}" style="all: unset;">
                     <div class="pet-card">
                         <div class="pet-image">
                             <img

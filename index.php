@@ -176,6 +176,6 @@ switch ($page) {
 
 
         http_response_code(404);
-        include __DIR__ . '/src/Views/404.php';
+        include __DIR__ . '/src/Views/error.php';
         exit;
 }

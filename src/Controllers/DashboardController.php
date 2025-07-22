@@ -21,6 +21,7 @@ class DashboardController
 
         if ($user->role !== 'lister') {
             http_response_code(403); // forbidden
+            include __DIR__ . '/../Views/error.php';
             return;
         }
 
@@ -44,6 +45,7 @@ class DashboardController
             ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') !== 'XMLHttpRequest'
         ) {
             http_response_code(403); // forbidden
+            include __DIR__ . '/../Views/error.php';
             return;
         }
 
@@ -64,6 +66,7 @@ class DashboardController
         $user = Auth::user();
         if ($user->role !== 'lister') {
             http_response_code(403); // forbidden
+            include __DIR__ . '/../Views/error.php';
             return;
         }
 
@@ -119,6 +122,7 @@ class DashboardController
         if (empty($id)) {
             http_response_code(400); // bad request
             echo json_encode(['error' => 'ID is required']);
+            include __DIR__ . '/../Views/error.php';
             return;
         }
 

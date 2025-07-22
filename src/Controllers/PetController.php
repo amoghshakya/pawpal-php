@@ -111,6 +111,7 @@ class PetController
         $auth = Auth::user();
         if ($auth->role !== 'lister') {
             http_response_code(403); // Forbidden
+            include __DIR__ . '/../Views/error.php';
             return;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -205,7 +206,7 @@ class PetController
         $pet = Pet::find($id);
         if (!$pet) {
             http_response_code(404);
-            include __DIR__ . '/../Views/404.php';
+            include __DIR__ . '/../Views/error.php';
             return;
         }
 
@@ -264,7 +265,7 @@ class PetController
         $pet = Pet::find($id);
         if (!$pet) {
             http_response_code(404);
-            include __DIR__ . '/../Views/404.php';
+            include __DIR__ . '/../Views/error.php';
             return;
         }
 

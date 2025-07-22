@@ -3,6 +3,35 @@ $title = "PawPal - Home";
 $extraStyles = [
     // 'home.css',
 ];
+
+$responseStatus = http_response_code();
+
+// a bunch of error messages
+$messages = [
+    403 => [
+        'title' => '403 - Forbidden',
+        'message' => 'You don\'t have permission to access this resource.'
+    ],
+    404 => [
+        'title' => '404 - Page Not Found',
+        'message' => 'The page you are looking for does not exist or has been moved.'
+    ],
+    500 => [
+        'title' => '500 - Internal Server Error',
+        'message' => 'Something went wrong on our end. Please try again later.'
+    ],
+    501 => [
+        'title' => '501 - Not Implemented',
+        'message' => 'This feature is not implemented on the server.'
+    ],
+    // Fallback/default
+    'default' => [
+        'title' => $responseStatus . ' - Error',
+        'message' => 'An unexpected error occurred.'
+    ]
+];
+
+$error = $messages[$responseStatus] ?? $messages['default'];
 ?>
 
 <?php include 'src/Views/partials/header.php'; ?>
@@ -75,12 +104,8 @@ $extraStyles = [
     </div>
 
     <div class="content">
-        <h1>
-            404 - Page Not Found
-        </h1>
-        <p class=" text-muted">
-            The page you are looking for does not exist or has been moved. Please check the URL or return to the homepage.
-        </p>
+        <h1><?= htmlspecialchars($error['title']) ?></h1>
+        <p class="text-muted"><?= htmlspecialchars($error['message']) ?></p>
     </div>
     <div>
         <button onclick="window.history.back()">Go back</button>

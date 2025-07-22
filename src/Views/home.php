@@ -34,7 +34,8 @@ $extraStyles = [
             <img
                 class="hero-image"
                 src="<?= BASE_URL ?>/assets/images/gang.png"
-                alt="A group of happy dogs" />
+                alt="A group of happy dogs"
+                draggable="false" />
         </div>
     </section>
 
@@ -50,7 +51,8 @@ $extraStyles = [
                 <div class="discover-image">
                     <img
                         src="<?= BASE_URL ?>/assets/images/pexels-together-dog.jpg"
-                        alt="Two golden retrievers together" />
+                        alt="Two golden retrievers together"
+                        draggable="false" />
                 </div>
                 <div class="flex flex-col" style="gap: 1rem;">
                     <div class="flex flex-col discover-text">

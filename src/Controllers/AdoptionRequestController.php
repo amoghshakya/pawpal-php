@@ -20,23 +20,24 @@ class AdoptionRequestController
     {
         if (!Auth::isAuthenticated()) {
             http_response_code(403);
+            include __DIR__ . '/../Views/error.php';
             return;
         }
 
         $pet = Pet::find($id);
         if (!$pet) {
             http_response_code(404);
-            include __DIR__ . '/../Views/404.php';
+            include __DIR__ . '/../Views/error.php';
             return;
         }
 
-        if ($pet->lister()->id === $_SESSION['user_id']) {
+        if (
+            $pet->lister()->id === $_SESSION['user_id']
+            || Auth::user()->hasApplied($pet->id)
+            || Auth::role() !== 'adopter'
+        ) {
             http_response_code(403);
-            return;
-        }
-
-        if (Auth::user()->hasApplied($pet->id)) {
-            http_response_code(403);
+            include __DIR__ . '/../Views/error.php';
             return;
         }
 

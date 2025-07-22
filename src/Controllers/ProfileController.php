@@ -50,6 +50,7 @@ class ProfileController
         $user = User::find($id);
         if (!$user) {
             http_response_code(404);
+            include __DIR__ . '/../Views/error.php';
             exit;
         }
 
