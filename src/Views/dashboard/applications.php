@@ -68,11 +68,17 @@ $extraStyles = [
                                 <div class="application-header">
                                     <div class="applicant-info">
                                         <div class="avatar">
-                                            <?= Utils::initials($application->applicant()->name) ?>
+                                            <?php if ($application->applicant()->profile_image): ?>
+                                                <img src="<?= BASE_URL . '/' . $application->applicant()->profile_image ?>" alt="<?= htmlspecialchars($application->applicant()->name) ?>" />
+                                            <?php else: ?>
+                                                <?= Utils::initials($application->applicant()->name) ?>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="applicant-details">
                                             <h4>
-                                                <?= htmlspecialchars($application->applicant()->name) ?>
+                                                <a href="<?= BASE_URL ?>/profile/<?= $application->applicant()->id ?>" class="unset" style="cursor: pointer">
+                                                    <?= htmlspecialchars($application->applicant()->name) ?>
+                                                </a>
                                             </h4>
                                             <p>Applied <?= date_format(new DateTime($application->created_at), 'M d, Y') ?></p>
                                         </div>
@@ -208,12 +214,14 @@ $extraStyles = [
                                 <div class="application-header">
                                     <div class="applicant-info">
                                         <div class="avatar">
-                                        ${app.user.profile_image ? `<img src="${app.user.profile_image}" alt="${app.user.name}">` : initials(app.user.name)}
+                                        ${app.user.profile_image ? `<img src="<?= BASE_URL . '/' ?>${app.user.profile_image}" alt="${app.user.name}">` : initials(app.user.name)}
                                         </div>
                                         <div class="applicant-details">
-                                            <h4>
+                                        <h4>
+                                            <a href="<?= BASE_URL ?>/profile/${app.user.id}" class="unset" style="cursor: pointer">
                                             ${app.user.name}
-                                            </h4>
+                                            </a>
+                                        </h4>
                                             <p>
                                                 Applied ${new Date(app.created_at).toLocaleDateString('en-US', {
                                                     month: 'short',
