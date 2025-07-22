@@ -71,7 +71,7 @@ A simple PHP + MySQL web application built using XAMPP.
     > Note that the table names are hardcoded in the codebase
 
 5. Run the project:
-    - Open your browser and navigate to `http://localhost/pawpal`.
+    - Open your browser and navigate to `http://localhost/pawpal-php`.
 
 ### Editor Setup 
 
