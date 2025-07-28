@@ -21,6 +21,8 @@ class AuthController
             $errors['name'] = 'Name is required.';
         } else if (strlen($data['name']) < 3) {
             $errors['name'] = 'Name must be at least 3 characters long.';
+        } else if (preg_match('/[^a-zA-Z\s]/', $data['name'])) {
+            $errors['name'] = 'Name can only contain letters and spaces.';
         }
 
         // Validate email (required, valid format, unique)
@@ -35,6 +37,8 @@ class AuthController
         // Validate phone (required)
         if (empty($data['phone'])) {
             $errors['phone'] = 'Phone number is required.';
+        } elseif (!preg_match('/^\+?[0-9\s\-()]+$/', $data['phone'])) {
+            $errors['phone'] = 'Invalid phone number format.';
         }
 
         // Validate address, city, state (required)
@@ -47,6 +51,18 @@ class AuthController
         if (empty($data['state'])) {
             $errors['state'] = 'State is required.';
         }
+
+        $fields = ['address', 'city', 'state'];
+        foreach ($fields as $field) {
+            if (empty($data[$field])) {
+                $errors[$field] = ucfirst($field) . ' is required.';
+            } elseif (strlen($data[$field]) < 2) {
+                $errors[$field] = ucfirst($field) . ' must be at least 2 characters long.';
+            } elseif (preg_match('/[^a-zA-Z0-9\s,.-]/', $data[$field])) {
+                $errors[$field] = ucfirst($field) . ' can only contain letters, numbers, spaces, commas, and periods.';
+            }
+        }
+
 
         // Password validation
         // 1. Required

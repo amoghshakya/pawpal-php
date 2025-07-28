@@ -41,6 +41,8 @@ class PetController
                 $errors[$field] = "The field '$field' is required.";
             } else if (strlen($data[$field]) > 255) {
                 $errors[$field] = "The field '$field' must not exceed 255 characters.";
+            } else if (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $data[$field])) {
+                $errors[$field] = "The field '$field' must not contain special characters.";
             }
         }
 
